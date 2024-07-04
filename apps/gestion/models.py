@@ -4,7 +4,7 @@ from apps.usuario.models import Usuario
 class RegistroCliente(models.Model):
     nombre = models.CharField('Nombre del cliente',max_length = 150, blank= False, null=False)
     Apellido = models.CharField('Apellido del cliente',max_length = 150, blank= False, null=False)
-    cedula = models.CharField('cedulo o del cliente',max_length = 150, blank= False, null=False)
+    cedula = models.CharField('cedula del cliente',max_length = 150, blank= False, null=False)
     correo = models.EmailField(max_length=254, unique=True)
     correo_aux = models.EmailField(max_length=254, unique=True)
     telefono = models.CharField(max_length = 150)
