@@ -40,6 +40,11 @@
     <link rel="stylesheet" href=" {% static "assets/vendor/libs/apex-charts/apex-charts.css" %}" />
     <script src="{% static "assets/vendor/js/helpers.js"%}"></script>
     <script src=" {% static "assets/js/config.js" %}"></script>
+    {% block style %}
+    
+    {% endblock style %}
+
+    
   </head>
 
   <body>
@@ -459,8 +464,7 @@
               </div>
             </footer>
             <!-- / Footer -->
-            <h1>prueba2</h1>
-            <h1>prueba de rama</h1>
+            
             <div class="content-backdrop fade"></div>
           </div>
           <!-- Content wrapper -->

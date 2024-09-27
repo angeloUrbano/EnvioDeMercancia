@@ -1,9 +1,10 @@
+import json
 from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic import ListView , CreateView , UpdateView , DeleteView , DetailView ,TemplateView
-
+from django.http import JsonResponse
 
 from apps.gestion.models import Mercancia , RegistroCliente , Wehrehouse
 from apps.gestion.forms import register_merchandiser_Form , register_werehouse_Form
@@ -94,4 +95,17 @@ class create_warehouse(CreateView):
 class show_werehouse(ListView):
     model= Wehrehouse 
     template_name =  "gestion/show_werehose_templete.html"
+
+
+
+#vista de registro del clientes
+
+class RegistroCliente(TemplateView):
+    template_name = "gestion/registro_cliente.html"
+
+
+
+
+
+    
 
