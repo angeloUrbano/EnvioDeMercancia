@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 
 function eliminate_elements() {
@@ -64,26 +63,10 @@ function save_merchandise(data  , urlSaveMerchandise){
 }
 
 // Obtener el campo de entrada, botón y contenedor de checkbox
-=======
- // Obtener el campo de entrada, botón y contenedor de checkbox
->>>>>>> main
  const inputMostrar = document.getElementById('input-mostrar');
  const botonMostrar = document.getElementById('boton-mostrar');
  const checkboxContenedor = document.getElementById('checkbox-contenedor');
 
-<<<<<<< HEAD
-=======
- // Agregar listener de evento al botón
- botonMostrar.addEventListener('click', () => {
-   // Mostrar el contenedor de checkbox si el campo de entrada no está vacío
-   if (inputMostrar.value !== '') {
-     checkboxContenedor.style.display = 'block';
-   } else {
-     alert('Por favor, ingrese un valor en el campo de entrada');
-   }
- });
-
->>>>>>> main
  // Obtener las casillas de verificación y contenedores de formularios
  const formulario1Casilla = document.getElementById('formulario1-casilla');
  const formulario2Casilla = document.getElementById('formulario2-casilla');
@@ -92,7 +75,6 @@ function save_merchandise(data  , urlSaveMerchandise){
 
  // Agregar listeners de eventos a las casillas de verificación
  formulario1Casilla.addEventListener('change', () => {
-<<<<<<< HEAD
   if (formulario2Casilla.checked) {
     formulario2Casilla.checked = false;
     formulario2Contenedor.style.display = 'none';
@@ -115,22 +97,6 @@ formulario2Casilla.addEventListener('change', () => {
     formulario2Contenedor.style.display = 'none';
   }
 });
-=======
-   if (formulario1Casilla.checked) {
-     formulario1Contenedor.style.display = 'block';
-   } else {
-     formulario1Contenedor.style.display = 'none';
-   }
- });
-
- formulario2Casilla.addEventListener('change', () => {
-   if (formulario2Casilla.checked) {
-     formulario2Contenedor.style.display = 'block';
-   } else {
-     formulario2Contenedor.style.display = 'none';
-   }
- });
->>>>>>> main
 
  // Obtener los botones de envío de los formularios
  const enviarFormulario1 = document.getElementById('enviar-formulario1');
@@ -187,7 +153,6 @@ formulario2Casilla.addEventListener('change', () => {
      return;
    }
 
-<<<<<<< HEAD
   // Peticion guardado de los datos
    const formData = new FormData()
     formData.append("nombre", nombre)
@@ -232,10 +197,6 @@ formulario2Casilla.addEventListener('change', () => {
   })
   .catch(error => console.error(error));
    
-=======
-   // If all inputs are valid, submit the form
-   formulario1.submit();
->>>>>>> main
  }
 
  // Función para validar el Formulario 2
@@ -251,14 +212,9 @@ formulario2Casilla.addEventListener('change', () => {
      return;
    }
 
-<<<<<<< HEAD
    // falta validacioness
 
    //  peticion ajax de formulario2 
 
    enviarFormulario2.submit();
-=======
-   // If the input is valid, submit the form
-   formulario2.submit();
->>>>>>> main
  }
