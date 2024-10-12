@@ -6,10 +6,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic import ListView , CreateView , UpdateView , DeleteView , DetailView ,TemplateView
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 
 from apps.gestion.models import Mercancia , RegistroCliente , Wehrehouse
 from apps.gestion.forms import register_merchandiser_Form , register_werehouse_Form
@@ -103,8 +100,6 @@ class show_werehouse(ListView):
     model= Wehrehouse 
     template_name =  "gestion/show_werehose_templete.html"
 
-<<<<<<< Updated upstream
-=======
 
 
 #vista de registro del clientes
@@ -179,4 +174,4 @@ def buscar_cliente(request):
 
     
 
->>>>>>> Stashed changes
+
