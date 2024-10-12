@@ -21,12 +21,8 @@ urlpatterns =[
     #path to show werehouse created
 	path('showing_warehouse/' , show_werehouse.as_view() , name='showing_warehouseName'),
 
-<<<<<<< HEAD
     path("registro_cliente/", RegistroClientes.as_view(), name="registro_cliente"),
 	path('buscar_cliente/', buscar_cliente, name='buscarcliente'),
 
-=======
-    path("registro_cliente/", RegistroCliente.as_view(), name="registro cliente")
->>>>>>> main
     
 ]
