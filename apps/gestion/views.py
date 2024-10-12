@@ -105,7 +105,6 @@ class show_werehouse(ListView):
 
 #vista de registro del clientes
 
-<<<<<<< HEAD
 class RegistroClientes(TemplateView):
     template_name = "gestion/registro_cliente.html"
 
@@ -170,18 +169,9 @@ def buscar_cliente(request):
 
 
    
-=======
-class RegistroCliente(TemplateView):
-    template_name = "gestion/registro_cliente.html"
-
->>>>>>> main
 
 
 
 
     
 
-<<<<<<< HEAD
-
-=======
->>>>>>> main
