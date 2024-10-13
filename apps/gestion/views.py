@@ -1,14 +1,18 @@
+import json
 from typing import Any
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic import ListView , CreateView , UpdateView , DeleteView , DetailView ,TemplateView
-
+from django.http import JsonResponse
 
 from apps.gestion.models import Mercancia , RegistroCliente , Wehrehouse
 from apps.gestion.forms import register_merchandiser_Form , register_werehouse_Form
 from apps.usuario.models import  Usuario
-
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class home(TemplateView):
@@ -37,6 +41,8 @@ class create_merchandise(CreateView):
 
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+
+        print("pasada por el post con su informacio")
 
         
         form = self.form_class(request.POST)
@@ -94,4 +100,78 @@ class create_warehouse(CreateView):
 class show_werehouse(ListView):
     model= Wehrehouse 
     template_name =  "gestion/show_werehose_templete.html"
+
+
+
+#vista de registro del clientes
+
+class RegistroClientes(TemplateView):
+    template_name = "gestion/registro_cliente.html"
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:            
+        #  usuario  por defecto(cambiar)
+        usuario = Usuario.objects.get(id=1) 
+        #  objeto RegistroCliente
+        registro_cliente = RegistroCliente(
+        nombre=request.POST.get('nombre'),
+        Apellido=request.POST.get('apellido'),
+        cedula=request.POST.get('cedula'),
+        correo=request.POST.get('correo'),
+        correo_aux=request.POST.get('correo_axi'),
+        telefono=request.POST.get('telefono'),
+        telefono_aux=request.POST.get('telefono_axi'),
+        tipo_cliente='cliente1', # esta por defecto (falta registro cliente Ejecutivo)
+        usuario=usuario
+    )
+        registro_cliente.save() #guardado
+         # diccionario con los datos del registro_cliente
+        datos_registro_cliente = {
+            'id': registro_cliente.id,
+            'nombre': registro_cliente.nombre,
+            'apellido': registro_cliente.Apellido,
+            'cedula': registro_cliente.cedula,
+            'correo': registro_cliente.correo,
+            'correo_aux': registro_cliente.correo_aux,
+            'telefono': registro_cliente.telefono,
+            'telefono_aux': registro_cliente.telefono_aux,
+            'tipo_cliente': registro_cliente.tipo_cliente,
+            'usuario': registro_cliente.usuario.username
+        }
+        #   delvorver dicionario y mensaje
+
+        print("proceso de registrar usuario..............   ")
+        return JsonResponse({'mensaje': 'Cliente registrado con éxito', 'datos': datos_registro_cliente})
+
+       
+
+
+
+# funcion  de buscar cliente en la vista 
+@require_http_methods(['POST'])
+def buscar_cliente(request):
+    if request.ajax_request:  #request.ajax_request en lugar de request.is_ajax()
+        q = request.POST.get('q')
+        try:
+            cliente = RegistroCliente.objects.get(cedula=q)
+            mensaje = "El Cliente Existe"
+            datos_cliente = {
+                'nombre': cliente.nombre,
+                'cedula': cliente.cedula,
+                'correo': cliente.correo,
+                'telefono': cliente.telefono
+            }
+        except ObjectDoesNotExist:
+            mensaje = 'El Cliente no Existe'
+            datos_cliente = {}
+        return JsonResponse({'mensaje': mensaje, 'datos_cliente': datos_cliente})
+    else:
+        return HttpResponseBadRequest('Solicitud no válida')
+
+
+   
+
+
+
+
+    
 

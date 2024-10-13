@@ -7,9 +7,6 @@ from apps.gestion.views import *
 app_name='gestionurls'
 urlpatterns =[
 	path('home/',home.as_view(), name = 'index'),
-    
-
-
 
 	#Gestion
     
@@ -24,6 +21,8 @@ urlpatterns =[
     #path to show werehouse created
 	path('showing_warehouse/' , show_werehouse.as_view() , name='showing_warehouseName'),
 
-	
+    path("registro_cliente/", RegistroClientes.as_view(), name="registro_cliente"),
+	path('buscar_cliente/', buscar_cliente, name='buscarcliente'),
+
     
 ]
