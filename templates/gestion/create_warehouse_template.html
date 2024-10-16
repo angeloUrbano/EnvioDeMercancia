@@ -1,25 +1,475 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends "index.html" %}
+{% load static %}
+{% block titulo %}<title> Registro</title>{% endblock titulo %}
 
-    <h1>prueba de render</h1>
+{%block style %}
+<style>
+    /* Ocultar los contenedores de formularios por defecto */
+    #formulario1-contenedor, #formulario2-contenedor {
+      display: none;
+    }
+    /* Ocultar los checkbox */
+    #checkbox-contenedor {
+      display: none;
+    }
+  </style>
+{% endblock style %}
 
+{% block contenido %}
 
+<div  class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-12">
+          <div class="d-flex justify-content-center">
+            <div class="card mb-12">
+              <h5 class="card-header">Buscar Cliente</h5>
+              <div class="card-body  demo-vertical-spacing demo-only-element">
+                  <!-- Campo de entrada y botón para mostrar los checkbox -->
+                  <div class="input-group">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="input-mostrar" 
+                        placeholder="Persona o Empresa"
+                        aria-label="Persona o Empresa"
+                        aria-describedby="button-addon2"
+                      />
+                      <button class="btn btn-outline-primary" type="button" id="boton-mostrar">Buscar</button>
+                    </div>
+              </div>
+          </div>
+          </div>
+          <br>
+          <div id ="formulario3-contenedor">
+            <div class="col-md">
+                <div class="card mb-6">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Warehouse</h5>
+                        <small class="text-muted float-end"><button class="btn btn-success ">Registrado</button></small>
+                    </div>
+                    <div class="card-body  demo-vertical-spacing demo-only-element">
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label" for="basic-icon-default-fullname">Shipper</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" name="shipper" id="shipper">
+                                        <option value="1">Prueba 1</option>
+                                        <option value="2">Prueba 2</option>
+                                        <option value="3">Prueba 3</option>
+                                        <option value="4">Prueba 4</option>
+                                        <option value="5">Prueba 5</option>
+                                    </select>
+                                  </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="basic-icon-default-fullname">Recibido de:</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" name="recibido_de" id="recibido_de">
+                                        <option value="1">Prueba 1</option>
+                                        <option value="2">Prueba 2</option>
+                                        <option value="3">Prueba 3</option>
+                                        <option value="4">Prueba 4</option>
+                                        <option value="5">Prueba 5</option>
+                                    </select>
+                                  </div>
+                            </div>
+                        </div>
+                        <HR></HR>
+                        <br>
+                        <div class="row">
+                            <div class="col-2">
+                                <label class="form-label" for="basic-icon-default-company">Ancho</label>
+                                <div class="input-group input-group-merge">
+                                  <span id="basic-icon-default-company2" class="input-group-text"
+                                    ><i class="bx bx-buildings"></i
+                                  ></span>
+                                  <input
+                                    type="text"
+                                    id="ancho"
+                                    class="form-control"
+                                    placeholder="1.20"
+                                    aria-label="1.20"
+                                    aria-describedby="basic-icon-default-company2"
+                                  />
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label" for="basic-icon-default-company">Alto</label>
+                                <div class="input-group input-group-merge">
+                                  <span id="basic-icon-default-company2" class="input-group-text"
+                                    ><i class="bx bx-buildings"></i
+                                  ></span>
+                                  <input
+                                    type="text"
+                                    id="alto"
+                                    class="form-control"
+                                    placeholder="1.20"
+                                    aria-label="1.20"
+                                    aria-describedby="basic-icon-default-company2"
+                                  />
+                                </div>    
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label" for="basic-icon-default-company">Prof.</label>
+                                <div class="input-group input-group-merge">
+                                  <span id="basic-icon-default-company2" class="input-group-text"
+                                    ><i class="bx bx-buildings"></i
+                                  ></span>
+                                  <input
+                                    type="text"
+                                    id="Profu"
+                                    class="form-control"
+                                    placeholder="1.20"
+                                    aria-label="1.20"
+                                    aria-describedby="basic-icon-default-company2"
+                                  />
+                                </div>    
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label" for="basic-icon-default-company">pvol</label>
+                                    <p>0</p>
+                                </div>
+                                <div class="col-2">
+                                    <label class="form-label" for="basic-icon-default-company">m3</label>
+                                        <p>0</p>
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="form-label" for="basic-icon-default-company">p3</label>
+                                            <p>0</p>
+                                        </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <label class="form-label" for="basic-icon-default-company">Tracking no.</label>
+                                <div class="input-group input-group-merge">
+                                  <span id="basic-icon-default-company2" class="input-group-text"
+                                    ><i class="bx bx-buildings"></i
+                                  ></span>
+                                  <input
+                                    type="text"
+                                    id="Tracking"
+                                    class="form-control"
+                                    placeholder="1.20"
+                                    aria-label="1.20"
+                                    aria-describedby="basic-icon-default-company2"
+                                  />
+                                </div>    
+                            </div>
+                            <div class="col-3">
+                                <label class="form-label" for="basic-icon-default-company">contenido</label>
+                                <div class="input-group input-group-merge">
+                                  <span id="basic-icon-default-company2" class="input-group-text"
+                                    ><i class="bx bx-buildings"></i
+                                  ></span>
+                                  <input
+                                    type="text"
+                                    id="contenido"
+                                    class="form-control"
+                                    placeholder="1.20"
+                                    aria-label="1.20"
+                                    aria-describedby="basic-icon-default-company2"
+                                  />
+                                </div>    
+                            </div>
+                            <div class="col-3">
+                                <label class="form-label" for="basic-icon-default-company">valor $.</label>
+                                <div class="input-group input-group-merge">
+                                  <span id="basic-icon-default-company2" class="input-group-text"
+                                    ><i class="bx bx-buildings"></i
+                                  ></span>
+                                  <input
+                                    type="text"
+                                    id="valor"
+                                    class="form-control"
+                                    placeholder="1.20"
+                                    aria-label="1.20"
+                                    aria-describedby="basic-icon-default-company2"
+                                  />
+                                </div>    
+                            </div>
+                            <div class="col-3">
+                                <label class="form-label" for="basic-icon-default-company"> <br>  </label>
+                                <div class="input-group input-group-merge">
+                                    <button class="btn btn-dark">Borrar</button>
+                                </div>    
 
-    <form method="post">
+                             
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <label class="form-label" for="basic-icon-default-company">comentario</label>
+                                <div class="input-group input-group-merge">
+                                  <span id="basic-icon-default-company2" class="input-group-text"
+                                    ><i class="bx bx-buildings"></i
+                                  ></span>
+                                  <textarea class="form-control" name="comentario" id="comentario" cols="30" rows="10"></textarea>
+                                </div>    
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-2">
+                                <button class="btn btn-info">Nuevo Registro</button>
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+          <br>
+          <br>
+        
+            <div class="row">
+              <div class="d-flex justify-content-center">
+                <div class="col-md-8">
+                  <div class="card mb-6">
+                      <div  class="caud-body demo-vertical-spacing demo-only-element">
+                          <div id="checkbox-contenedor">
+                            <div class="d-flex justify-content-center">
+                              <div class="mb-3">
+                                <div class="form-check form-control-sm footer-link me-3">
+                                    <input class="form-check-input" type="checkbox"  id="formulario1-casilla" />
+                                    <label class="form-check-label" for="formulario1-casilla"> Cliente Natural </label>
+                                  </div>
+                                  <div class="form-check form-control-sm footer-link me-3">
+                                    <input class="form-check-input" type="checkbox"  id="formulario2-casilla" />
+                                    <label class="form-check-label" for="formulario2-casilla"> Cliente Ejecutivo </label>
+                                  </div>
+                            </div>       
+                              </div>
+                              <div id ="formulario1-contenedor" >
+                                  <form action="" id="formulario1">
+                                       <div class="row">
+                                          <div class="col-xl">
+                                              <div class="card mb-4">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                  <h5 class="mb-0">Cliente Natural</h5>
+                                                  <small class="text-muted float-end">Registro datos personales</small>
+                                                </div>
+                                                <div class="card-body">
+                                                  <form>
+                                                    <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-fullname">Nombres</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-fullname2" class="input-group-text"
+                                                          ><i class="bx bx-user"></i
+                                                        ></span>
+                                                        <input
+                                                          type="text"
+                                                          id="nombre"
+                                                          class="form-control"
+                                                          id="basic-icon-default-fullname"
+                                                          placeholder="John Doe"
+                                                          aria-label="John Doe"
+                                                          aria-describedby="basic-icon-default-fullname2"
+                                                        />
+                                                      </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-fullname">Apellido</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-fullname2" class="input-group-text"
+                                                          ><i class="bx bx-user"></i
+                                                        ></span>
+                                                        <input
+                                                          type="text"
+                                                          id="Apellido"
+                                                          class="form-control"
+                                                          id="basic-icon-default-fullname"
+                                                          placeholder="John Doe"
+                                                          aria-label="John Doe"
+                                                          aria-describedby="basic-icon-default-fullname2"
+                                                        />
+                                                      </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-fullname">cedula</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-fullname2" class="input-group-text"
+                                                          ><i class="bx bx-user"></i
+         ></span>
+                                                        <input
+                                                          type="text"
+                                                          id="cedula"
+                                                          class="form-control"
+                                                          id="basic-icon-default-fullname"
+                                                          placeholder="John Doe"
+                                                          aria-label="John Doe"
+                                                          aria-describedby="basic-icon-default-fullname2"
+                                                        />
+                                                      </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-email">Email</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                        <input
+                                                          type="text"
+                                                          id="correo"
+                                                          class="form-control"
+                                                          placeholder="john.doe"
+                                                          aria-label="john.doe"
+                                                          aria-describedby="basic-icon-default-email2"
+                                                        />
+                                                        <span id="basic-icon-default-email2" class="input-group-text">@example.com</span>
+                                                      </div>
+                                                      <div class="form-text">You can use letters, numbers & periods</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-email">Email axiliar</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                        <input
+                                                          type="text"
+                                                          id="correo_axi"
+                                                          class="form-control"
+                                                          placeholder="john.doe"
+                                                          aria-label="john.doe"
+                                                          aria-describedby="basic-icon-default-email2"
+                                                        />
+                                                        <span id="basic-icon-default-email2" class="input-group-text">@example.com</span>
+                                                      </div>
+                                                      <div class="form-text">You can use letters, numbers & periods</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-phone">Telefono</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-phone2" class="input-group-text"
+                                                          ><i class="bx bx-phone"></i
+                                                        ></span>
+                                                        <input
+                                                          type="text"
+                                                          id="telefono"
+                                                          class="form-control phone-mask"
+                                                          placeholder="658 799 8941"
+                                                          aria-label="658 799 8941"
+                                                          aria-describedby="basic-icon-default-phone2"
+                                                        />
+                                                      </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-phone">Telefono Personal</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-phone2" class="input-group-text"
+                                                          ><i class="bx bx-phone"></i
+                                                        ></span>
+                                                        <input
+                                                          type="text"
+                                                          id="telefono_axi"
+                                                          class="form-control phone-mask"
+                                                          placeholder="658 799 8941"
+                                                          aria-label="658 799 8941"
+                                                          aria-describedby="basic-icon-default-phone2"
+                                                        />
+                                                      </div>
+                                                    </div>
+                                                    <button type="submit" id="enviar-formulario1" class="btn btn-primary">Enviar</button>
+                                                  </form>
+                                                </div>
+                                              </div>
+                                            </div>
+                                       </div>
+                                  </form>
+                              </div>
+                              <div id="formulario2-contenedor">
+                                  <form id="formulario2">
+                                      <div class="col-xl">
+                                          <div class="card mb-4">
+                                          <div class="card-header d-flex justify-content-between align-items-center">
+                                              <h5 class="mb-0">Cliente Ejecutivo</h5>
+                                              <small class="text-muted float-end">Datos de la Compañia</small>
+                                          </div>
+                                            <div class="card-body">
+                                              <form>
+                                                  <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-company">Empresa</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-company2" class="input-group-text"
+                                                          ><i class="bx bx-buildings"></i
+                                                        ></span>
+                                                        <input
+                                                          type="text"
+                                                          id="nombre_e"
+                                                          class="form-control"
+                                                          placeholder="ACME Inc."
+                                                          aria-label="ACME Inc."
+                                                          aria-describedby="basic-icon-default-company2"
+                                                        />
+                                                      </div>
+                                                  </div>
+                                                  <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-company">RIF</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-company2" class="input-group-text"
+                                                          ><i class="bx bx-buildings"></i
+                                                        ></span>
+                                                        <input
+                                                          type="text"
+                                                          id="rif"
+                                                          class="form-control"
+                                                          placeholder="ACME Inc."
+                                                          aria-label="ACME Inc."
+                                                          aria-describedby="basic-icon-default-company2"
+                                                        />
+                                                      </div>
+                                                  </div>
+                                                  <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-email">Email Corporativo</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                        <input
+                                                          type="text"
+                                                          id="correo_corp"
+                                                          class="form-control"
+                                                          placeholder="john.doe"
+                                                          aria-label="john.doe"
+                                                          aria-describedby="basic-icon-default-email2"
+                                                        />
+                                                        <span id="basic-icon-default-email2" class="input-group-text">@example.com</span>
+                                                      </div>
+                                                      <div class="form-text">You can use letters, numbers & periods</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                      <label class="form-label" for="basic-icon-default-phone">Telefono Corporativo</label>
+                                                      <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-phone2" class="input-group-text"
+                                                          ><i class="bx bx-phone"></i
+                                                        ></span>
+                                                        <input
+                                                          type="text"
+                                                          id="telefono_corp"
+                                                          class="form-control phone-mask"
+                                                          placeholder="658 799 8941"
+                                                          aria-label="658 799 8941"
+                                                          aria-describedby="basic-icon-default-phone2"
+                                                        />
+                                                      </div>
+                                                    </div>
+                                              
+                                                <button type="submit" id="enviar-formulario2" class="btn btn-primary">Enviar</button>
+                                                
+                                              </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                  </form>
+                            </div>
+                            
+                      </div>
+                  </div>
+              </div>
+              </div>
+                
+            </div>
+        </div>
+          
+        </div>
+    </div> 
+</div>
 
-        {% csrf_token %}
-
-        {{form.as_p}}
-
-        <input type="submit">
-    </form>
-     
-    
-</body>
-</html>
+{% endblock contenido %}
