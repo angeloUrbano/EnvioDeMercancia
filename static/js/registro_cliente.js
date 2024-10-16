@@ -1,5 +1,5 @@
 
-
+let infoUserRegisterId = 0;
 function eliminate_elements() {
   const divContainer = document.getElementById('divcontainer');
   const contenedorRegisterMerchandise = document.getElementById('contenedorRegisterMerchandise');
@@ -15,52 +15,68 @@ function eliminate_elements() {
 }
 
 
-function save_merchandise(data  , urlSaveMerchandise){
-
-
-
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
       }
     }
-    return cookieValue;
   }
-  
+  return cookieValue;
+}
+
+
+
+
+function save_merchandise(numberMerchandise , infoUserRegisterId , urlSaveMerchandise){
+
   const csrftoken = getCookie('csrftoken');
 
+    let data = {
+      "id" : infoUserRegisterId,
+      "merchandise":numberMerchandise
+    }
 
-
-
-    Options={
+    options={
       method: 'POST',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRFToken': csrftoken,
         'Content-Type': 'application/x-www-form-urlencoded' // Agrega este header
       },
-      body:"prueba"
+      body: JSON.stringify(data)
     }
 
-    fetch(urlSaveMerchandise , Options)
-    .then(
-      response => response.json()
-     ).then(
-      alert("prueba")
-     )
-
-    
-
-    .catch()
+    fetch(urlSaveMerchandise, options)
+    .then(response => response.json())
+    .then(res => {
+      console.log(res);
+      alert(res.success);
+    })
+    .catch(error => {
+      alert("error en el registro de mercancia");
+    });
 
 }
+
+
+
+let procesSendInfoMerchandise = document.querySelector("#merchandiseInputBooton")
+
+procesSendInfoMerchandise.addEventListener("click", function(){
+
+  let  numberMerchandise =  document.querySelector("#merchandiseInput").value
+  console.log(numberMerchandise , "numero de entrada de mercancia")
+
+  save_merchandise(numberMerchandise , infoUserRegisterId , urlSaveMerchandise)
+
+
+})
 
 // Obtener el campo de entrada, botón y contenedor de checkbox
  const inputMostrar = document.getElementById('input-mostrar');
@@ -184,15 +200,13 @@ formulario2Casilla.addEventListener('change', () => {
     const registroCliente = data.datos;
     console.log(registroCliente);
     //  aciones con los datos
-    alert("paso por aqui prueba de angelo")
-    alert("Cliente registrado con éxito");
+
     eliminate_elements()
     const contenedorRegisterMerchandise = document.getElementById('contenedorRegisterMerchandise');
     contenedorRegisterMerchandise.removeAttribute('hidden');
-    console.log("se eliminaron los elementos")
 
-    let prueba_de_envio =0
-    save_merchandise( prueba_de_envio  , urlSaveMerchandise)
+    console.log(registroCliente.id , "datos...............")
+    infoUserRegisterId = registroCliente.id
 
   })
   .catch(error => console.error(error));

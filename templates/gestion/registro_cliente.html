@@ -54,19 +54,19 @@
         <div class="col-md-12">
           <div class="d-flex justify-content-center">
             <div class="card mb-12">
-              <h5 class="card-header">Buscar Cliente</h5>
+              <h5 class="card-header">registrar Mercancia</h5>
               <div class="card-body  demo-vertical-spacing demo-only-element">
                   <!-- Campo de entrada y botón para mostrar los checkbox -->
                   <div class="input-group">
                       <input
                         type="text"
                         class="form-control"
-                        id="input-mostrar" 
-                        placeholder="Persona o Empresa"
-                        aria-label="Persona o Empresa"
+                        id="merchandiseInput" 
+                        placeholder="Cod Mercancia"
+                        aria-label="Cod Mercancia"
                         aria-describedby="button-addon2"
                       />
-                      <button class="btn btn-outline-primary" type="button" id="boton-mostrar">Buscar</button>
+                      <button class="btn btn-outline-primary" type="button" id="merchandiseInputBooton">Guardar</button>
                     </div>
               </div>
           </div>
@@ -383,8 +383,14 @@
         }
       } else {
         console.log("existe el Cliente")
-        console.log(transformarToJson);
+      console.log(transformarToJson);
+      eliminate_elements()
+      const contenedorRegisterMerchandise = document.getElementById('contenedorRegisterMerchandise');
+      contenedorRegisterMerchandise.removeAttribute('hidden');
 
+
+      console.log(transformarToJson.datos_cliente.id, "datos2222...............")
+      infoUserRegisterId = transformarToJson.datos_cliente.id
       }
         
     }else{
@@ -408,3 +414,6 @@ botonSubmit.addEventListener('click', function() {
 
 
 {% endblock contenido %}
+
+
+

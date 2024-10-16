@@ -31,37 +31,29 @@ class create_merchandise(CreateView):
     template_name = 'gestion/merchandise_register.html'
     form_class = register_merchandiser_Form
 
-    #success_url = '/merchandise_register'
-
-
-
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        return render(self.request , self.template_name , {"form":self.form_class})
+        if not  request.ajax_request:
+            return redirect("gestionurls:registro_cliente")
+
     
 
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 
-        print("pasada por el post con su informacio")
+        data  =json.loads(request.body)
+        if request.ajax_request:
+            if data :
+                object_to_save = self.model()
+                object_to_save.usuario_id = request.user.id 
+                object_to_save.trakin = data['merchandise']   
+                object_to_save.regisro_cliente = RegistroCliente.objects.get(id=data['id'])
+                object_to_save.save()  
 
+                return JsonResponse({"success": "Se registro la mercancia"})
+            else:
+                return JsonResponse({"error":"No se registro la mercancia"})
         
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            info = form.cleaned_data
-            print(info)
-            user  = request.user.id 
-            object_to_save = self.model()
-            object_to_save.usuario_id = request.user.id 
-            object_to_save.trakin = info['trakin']   
-            object_to_save.regisro_cliente = RegistroCliente.objects.latest('id') # i should do better, 
-            object_to_save.save()   
-
-            print("it is valid" , user)
-            return redirect('gestionurls:merchandiser_registerName')
-        else:
-            return render(self.request , self.template_name , {"form":form})
-        
-
+        return redirect("gestionurls:buscarcliente")
 
 
 #this class create a werehouse
@@ -155,6 +147,7 @@ def buscar_cliente(request):
             cliente = RegistroCliente.objects.get(cedula=q)
             mensaje = "El Cliente Existe"
             datos_cliente = {
+                'id': cliente.id,
                 'nombre': cliente.nombre,
                 'cedula': cliente.cedula,
                 'correo': cliente.correo,
