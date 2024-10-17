@@ -5,12 +5,15 @@
 {%block style %}
 <style>
     /* Ocultar los contenedores de formularios por defecto */
-    #formulario1-contenedor, #formulario2-contenedor {
+    #formulario1-contenedor, #formulario2-contenedor, {
       display: none;
     }
     /* Ocultar los checkbox */
     #checkbox-contenedor {
       display: none;
+    }
+    #formulario3-contenedor {
+      display: block;
     }
   </style>
 {% endblock style %}
@@ -200,12 +203,15 @@
                         <div class="row">
                             <label class="form-label" for="basic-icon-default-company">comentario</label>
                                 <div class="input-group input-group-merge">
-                                  <span id="basic-icon-default-company2" class="input-group-text"
-                                    ><i class="bx bx-buildings"></i
-                                  ></span>
-                                  <textarea class="form-control" name="comentario" id="comentario" cols="30" rows="10"></textarea>
+                                  <textarea class="form-control" name="comentario" id="comentario" cols="4" rows="3"></textarea>
                                 </div>    
                         </div>
+                        <div class="row">
+                          <label class="form-label" for="basic-icon-default-company">Observacion</label>
+                              <div class="input-group input-group-merge">
+                                <textarea class="form-control" name="observacion" id="observacion" cols="4" rows="3"></textarea>
+                              </div>    
+                      </div>
                     </div>
                     <div class="card-footer">
                         <div class="row">
@@ -471,5 +477,62 @@
         </div>
     </div> 
 </div>
+<script>
+  // ......................................peticion  buscar Cliente...............................................
+  var currentBuscarClienteUrl = "{% url 'gestionurls:buscarcliente' %}";
+  console.log(currentBuscarClienteUrl)
+
+  const botonSubmit = document.querySelector("#boton-mostrar")
+  async function buscarCliente(currentBuscarClienteUrl) {
+
+  const inputValue = document.getElementById('input-mostrar').value;
+  console.log(inputValue)
+  const opciones = {
+    method: 'POST',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': '{{ csrf_token }}',
+      'Content-Type': 'application/x-www-form-urlencoded' // Agrega este header
+    },
+    body: new URLSearchParams({
+      q: inputValue
+    })
+  };
+
+  let res =  await fetch(currentBuscarClienteUrl, opciones)
+  let transformarToJson = await res.json()
+
+  if (res.ok) {
+    const checkboxContenedor = document.getElementById('checkbox-contenedor');
+    const formulario3Contenedor = document.getElementById('formulario3-contenedor');
+    checkboxContenedor.style.display = 'none'; // Establece el estilo display en none por defecto
+    
+    if (transformarToJson.mensaje === "El Cliente no Existe") {
+      if (confirm("El Cliente no Existe. Desea crear nuevo Cliente")) {
+        console.log("proceso de creado de cliente")
+        checkboxContenedor.style.display = 'block'; // Cambia el estilo display a block si se ha confirmado
+        formulario3Contenedor.style.display = 'none';
+      } else {
+        console.log("Cancelar")
+      }
+    } else {
+      console.log("existe el Cliente")
+      console.log(transformarToJson);
+
+    }
+      
+  }else{
+      alert("error en el envio de formulario")
+  }
+}
+
+botonSubmit.addEventListener('click', function() {
+  buscarCliente(currentBuscarClienteUrl)
+});
+
+</script>
+<script src="{% static 'js/registro_cliente.js' %}"></script>
+
 
 {% endblock contenido %}
+ 

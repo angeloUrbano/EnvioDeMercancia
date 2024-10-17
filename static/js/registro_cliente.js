@@ -87,14 +87,15 @@ formulario2Casilla.addEventListener('change', () => {
     });
     return;
   }
-  if (!cedulaRegex.test(cedula)) {
-    Swal.fire({
-      title: 'Error',
-      text: 'Por favor, ingrese una cédula válida',
-      icon: 'error',
-    });
-    return;
-  }
+  // if (!cedulaRegex.test(cedula)) {
+  //   console.log(cedula)
+  //   Swal.fire({
+  //     title: 'Error',
+  //     text: 'Por favor, ingrese una cédula válida',
+  //     icon: 'error',
+  //   });
+  //   return;
+  // }
   if (!correoRegex.test(correo)) {
     Swal.fire({
       title: 'Error',
