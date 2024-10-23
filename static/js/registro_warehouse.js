@@ -41,3 +41,5 @@ formulario2Casilla.addEventListener('change', () => {
    formulario2Contenedor.style.display = 'none';
  }
 });
+
+
