@@ -9,11 +9,13 @@ from django.views.generic import TemplateView
 from django.views.generic import ListView , CreateView , UpdateView , DeleteView , DetailView ,TemplateView
 from django.http import JsonResponse
 
-from apps.gestion.models import Mercancia , RegistroCliente , Wehrehouse
+from apps.gestion.models import Mercancia , RegistroCliente , Wehrehouse , Carrito
 from apps.gestion.forms import register_merchandiser_Form , register_werehouse_Form
 from apps.usuario.models import  Usuario
 from django.core.exceptions import ObjectDoesNotExist
 
+
+from django.shortcuts import render, redirect, get_object_or_404
 
 class home(TemplateView):
     template_name = 'index.html'
@@ -32,6 +34,7 @@ class create_merchandise(CreateView):
     form_class = register_merchandiser_Form
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        
         if not  request.ajax_request:
             return redirect("gestionurls:registro_cliente")
 
@@ -55,6 +58,19 @@ class create_merchandise(CreateView):
         
         return redirect("gestionurls:buscarcliente")
 
+def agregar_a_carrito(request, wherehouse_id):
+    wherehouse = get_object_or_404(Wehrehouse, id=wherehouse_id)
+    carrito, created = Carrito.objects.get_or_create(usuario=request.user)
+    carrito.wherehouses.add(wherehouse)
+    return redirect('gestionurls:mostrar_carrito')
+
+
+def mostrar_carrito(request):
+    carrito = Carrito.objects.filter(usuario=request.user).first()
+    return render(request, 'gestion/carrito.html', {'carrito': carrito})
+
+
+
 
 #this class create a werehouse
 class create_warehouse(CreateView):
@@ -65,7 +81,10 @@ class create_warehouse(CreateView):
 
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        return render(self.request , self.template_name , {"form":self.form_class})
+
+        carrito = Carrito.objects.filter(usuario=request.user).first()
+
+        return render(self.request , self.template_name , {"form":self.form_class ,  'carrito': carrito})
     
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
@@ -78,7 +97,15 @@ class create_warehouse(CreateView):
             data['usuario_id']=request.user.id
             object_to_create = self.model(**data)
             object_to_create.save()
-            return redirect('gestionurls:merchandiser_registerName')
+
+            nuevo_id = object_to_create.id
+
+            wherehouse = get_object_or_404(Wehrehouse, id=nuevo_id)
+            carrito, created = Carrito.objects.get_or_create(usuario=request.user)
+            carrito.wherehouses.add(wherehouse)
+
+            
+            return redirect('gestionurls:creating_warehouseName')
 
         else:
             print("it is not ok")    

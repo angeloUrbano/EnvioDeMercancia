@@ -65,6 +65,14 @@ class Wehrehouse(models.Model):
 
     def __str__(self):
         return f"Trakin: {self.Tracking_num}"
+    
+class Carrito(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    wherehouses = models.ManyToManyField(Wehrehouse, related_name='carritos')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Carrito de {self.usuario.username} - {self.fecha_creacion}"    
 
     
     

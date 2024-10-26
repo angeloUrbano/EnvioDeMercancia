@@ -1,5 +1,4 @@
 
-<<<<<<< HEAD
 let infoUserRegisterId = 0;
 function eliminate_elements() {
   const divContainer = document.getElementById('divcontainer');
@@ -64,9 +63,6 @@ function save_merchandise(numberMerchandise , infoUserRegisterId , urlSaveMercha
     });
 
 }
-=======
-
->>>>>>> 997d43c5c8b7bf8bff4df46a7645351bf17c981a
 
 
 
@@ -208,7 +204,6 @@ formulario2Casilla.addEventListener('change', () => {
     });
     return;
   }
-<<<<<<< HEAD
    const opciones = {
     method: 'POST',
     headers: {
@@ -232,19 +227,7 @@ formulario2Casilla.addEventListener('change', () => {
 
     console.log(registroCliente.id , "datos...............")
     infoUserRegisterId = registroCliente.id
-=======
-
- // Peticion guardado de los datos
-  const formData = new FormData()
-   formData.append("nombre", nombre)
-   formData.append("apellido", apellido)
-   formData.append("cedula", cedula)
-   formData.append("correo", correo)
-   formData.append("correo_axi", correo_axi)
-   formData.append("telefono", telefono)
-   formData.append("telefono_axi", telefono_axi)
->>>>>>> 997d43c5c8b7bf8bff4df46a7645351bf17c981a
-
+  })
 console.log(" entro en el formData u el bucle")
   console.log(formData)
   for (var pair of formData.entries()) {
@@ -275,7 +258,7 @@ fetch(urlpararegistrarcliente, opciones)
  .catch(error => console.error(error));
 }
  // Función para validar el Formulario 2
- function validateFormulario2(event) {
+function validateFormulario2(event) {
    event.preventDefault(); // Prevent the form from submitting
    const correo = document.getElementById('correo').value;
 

@@ -24,5 +24,6 @@ urlpatterns =[
     path("registro_cliente/", RegistroClientes.as_view(), name="registro_cliente"),
 	path('buscar_cliente/', buscar_cliente, name='buscarcliente'),
 
-    
+	path('agregar/<int:wherehouse_id>/', agregar_a_carrito, name='agregar_a_carrito'),
+    path('carrito/', mostrar_carrito, name='mostrar_carrito'),
 ]

@@ -1,0 +1,10 @@
+<h1>Carrito de Compras</h1>
+<ul>
+    {% if carrito %}
+        {% for wherehouse in carrito.wherehouses.all %}
+            <li>{{ wherehouse }} - Valor: {{ wherehouse.valor }}</li>
+        {% endfor %}
+    {% else %}
+        <li>No hay elementos en el carrito.</li>
+    {% endif %}
+</ul>
