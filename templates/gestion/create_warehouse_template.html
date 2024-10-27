@@ -21,21 +21,12 @@
 {% block contenido %}
 
 <div  class="container-xxl flex-grow-1 container-p-y">
-  {% if carrito %}
-  {% for wherehouse in carrito.wherehouses.all %}
-      <li>{{ wherehouse }} - Valor: {{ wherehouse.valor }}</li>
-  {% endfor %}
-{% else %}
-  <li>No hay elementos en el carrito.</li>
-{% endif %}
 
 
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit">
-</form>
+
+
+
 
 
     <div class="row">
@@ -104,10 +95,27 @@
                                 </div>
                                 <div class="offcanvas-body my-auto mx-0 flex-grow-0">
                                   <p class="text-center">
-                                     formulario formulario1  formulario formulario1  formulario formulario1 formulario formulario1
-                                     formulario formulario1 formulario formulario1 formulario formulario1
-                                     formulario formulario1 formulario formulario1 formulario formulario1
-                                     formulario formulario1 formulario formulario1 formulario formulario1
+                                    Copy code
+                                    {% if carrito %}
+                                        <ul>
+                                            {% for wherehouse in carrito.wherehouses.all %}
+                                                <li>
+                                                    {{ wherehouse }} - Valor: {{ wherehouse.valor }}
+                                                    <button class="abrir-modal" data-id="{{ wherehouse.id }}">Eliminar</button>
+                                                </li>
+                                                <!-- Modal para Confirmar Eliminación -->
+                                                <dialog id="modal-{{ wherehouse.id }}">
+                                                    <h2>Confirmar Eliminación</h2>
+                                                    <p>¿Estás seguro de que deseas eliminar "{{ wherehouse }}"?</p>
+                                                    <button class="cerrar-modal">Cancelar</button>
+                                                    <button class="confirmar-eliminar" data-id="{{ wherehouse.id }}">Eliminar</button>
+                                                </dialog>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <li>No hay elementos en el carrito.</li>
+                                    {% endif %}
+
                                   </p>
                                   <button type="button" class="btn btn-primary mb-2 d-grid w-100">Enviar</button>
                                   <button
@@ -123,6 +131,7 @@
                           </div>
                         </small>
                     </div>
+                    <form method="post"  id="formWherehouse">
                     <div class="card-body  demo-vertical-spacing demo-only-element">
                         <div class="row">
                             <div class="col-6">
@@ -161,7 +170,8 @@
                                   ></span>
                                   <input
                                     type="text"
-                                    id="ancho"
+                                    id="ancho_caja"
+                                    name="ancho_caja"
                                     class="form-control"
                                     placeholder="1.20"
                                     aria-label="1.20"
@@ -178,6 +188,7 @@
                                   <input
                                     type="text"
                                     id="alto"
+                                    name="alto"
                                     class="form-control"
                                     placeholder="1.20"
                                     aria-label="1.20"
@@ -193,7 +204,8 @@
                                   ></span>
                                   <input
                                     type="text"
-                                    id="Profu"
+                                    id="profundida_caja"
+                                    name="profundida_caja"
                                     class="form-control"
                                     placeholder="1.20"
                                     aria-label="1.20"
@@ -223,7 +235,8 @@
                                   ></span>
                                   <input
                                     type="text"
-                                    id="Tracking"
+                                    id="Tracking_num"
+                                   name="Tracking_num"
                                     class="form-control"
                                     placeholder="1.20"
                                     aria-label="1.20"
@@ -240,6 +253,7 @@
                                   <input
                                     type="text"
                                     id="contenido"
+                                   name="contenido"
                                     class="form-control"
                                     placeholder="1.20"
                                     aria-label="1.20"
@@ -256,6 +270,7 @@
                                   <input
                                     type="text"
                                     id="valor"
+                                    name="valor"
                                     class="form-control"
                                     placeholder="1.20"
                                     aria-label="1.20"
@@ -281,20 +296,20 @@
                         <div class="row">
                             <label class="form-label" for="basic-icon-default-company">comentario</label>
                                 <div class="input-group input-group-merge">
-                                  <textarea class="form-control" name="comentario" id="comentario" cols="4" rows="3"></textarea>
+                                  <textarea class="form-control" name="comentarios" id="comentarios" cols="4" rows="3"></textarea>
                                 </div>    
                         </div>
                         <div class="row">
                           <label class="form-label" for="basic-icon-default-company">Observacion</label>
                               <div class="input-group input-group-merge">
-                                <textarea class="form-control" name="observacion" id="observacion" cols="4" rows="3"></textarea>
+                                <textarea class="form-control" name="onservaciones" id="onservaciones" cols="4" rows="3"></textarea>
                               </div>    
                       </div>
                     </div>
                     <div class="card-footer">
                         <div class="row">
                           <div class="col-6">
-                            <button
+                            <button id="buttonSaveFormWharehouse"
                                 type="button"
                                 style="border: none; background: transparent; padding: 0;"
                             >
@@ -310,6 +325,11 @@
                 </div>
             </div>
         </div>
+
+        
+
+
+        </form>
           <br>
           <br>
         <!-- Registra de cliente no Existente -->
@@ -673,6 +693,111 @@
 botonSubmit.addEventListener('click', function() {
   buscarCliente(currentBuscarClienteUrl)
 });
+
+
+
+
+
+
+let buttonFormWhereHouseJs = document.getElementById("buttonSaveFormWharehouse")
+
+buttonFormWhereHouseJs.addEventListener("click", ()=>{
+  alert("se toco el botin ")
+  // id="shipper"
+  // id="recibido_de"
+  // id="ancho"
+  // id="Profu"
+  // id="Tracking"
+  // id="contenido"
+  // id="valor"
+  // id="comentario"
+  // id="observacion"
+  var UrlCreatingWherehouse = "{% url 'gestionurls:creating_warehouseName' %}";
+
+let form = document.getElementById("formWherehouse");
+const formData = new FormData(form);
+for (const [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+}
+
+console.log(formData);
+
+const opciones2 = {
+  method: 'POST',
+  headers: {
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-CSRFToken': '{{ csrf_token }}',
+    // Remove Content-Type header
+  },
+  body: formData // Send the FormData directly
+};
+
+fetch(UrlCreatingWherehouse, opciones2)
+  .then(response => {
+    if (response.ok) {
+      return response.json(); // Return the parsed JSON
+    } else {
+      throw new Error('Network response was not ok');
+    }
+  })
+  .then(data => {
+    console.log(data); // Handle the parsed JSON data
+  })
+  .catch(error => console.error('Error:', error));
+
+
+
+})
+
+
+
+// Obtener todos los botones de abrir modal
+const abrirModales = document.querySelectorAll('.abrir-modal');
+
+// Función para abrir el modal
+abrirModales.forEach(boton => {
+    boton.addEventListener('click', () => {
+        const modalId = `modal-${boton.getAttribute('data-id')}`; // Obtener el ID del modal correspondiente
+        const modal = document.getElementById(modalId);
+        modal.showModal(); // Muestra el modal
+    });
+});
+
+// Función para cerrar el modal
+document.querySelectorAll('.cerrar-modal').forEach(botonCerrar => {
+    botonCerrar.addEventListener('click', () => {
+        const modal = botonCerrar.closest('dialog'); // Encuentra el modal más cercano
+        modal.close(); // Cierra el modal
+    });
+});
+
+// Función para confirmar la eliminación
+document.querySelectorAll('.confirmar-eliminar').forEach(botonEliminar => {
+    botonEliminar.addEventListener('click', function() {
+        const itemId = this.getAttribute('data-id'); // Obtener el ID del elemento
+        const deleteUrl = `/delete_wherehouse/${itemId}/`; // Construir la URL para eliminar el elemento
+
+        // Realizar la solicitud de eliminación
+        console.log(`Sending DELETE request to: ${deleteUrl}`);
+fetch(deleteUrl, {
+    method: 'DELETE',
+    headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+    },
+})
+        .then(response => {
+            if (response.ok) {
+                // Eliminar el elemento del DOM
+                const modal = this.closest('dialog');
+                modal.close(); // Cerrar el modal
+                botonEliminar.closest('li').remove(); // Eliminar el elemento de la lista
+            } else {
+                alert('Error al eliminar el elemento.');
+            }
+        });
+    });
+});
+
 
 </script>
 <script>

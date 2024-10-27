@@ -16,6 +16,7 @@ urlpatterns =[
 
 	#path to create werehouse
     path('creating_warehouse/' , create_warehouse.as_view() , name='creating_warehouseName'),
+    path('delete_wherehouse/<int:wherehouse_id>/', delete_wherehouse, name='delete_wherehouse'),
     
 	
     #path to show werehouse created

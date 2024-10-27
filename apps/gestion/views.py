@@ -34,7 +34,6 @@ class create_merchandise(CreateView):
     form_class = register_merchandiser_Form
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        
         if not  request.ajax_request:
             return redirect("gestionurls:registro_cliente")
 
@@ -82,6 +81,7 @@ class create_warehouse(CreateView):
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 
+
         carrito = Carrito.objects.filter(usuario=request.user).first()
 
         return render(self.request , self.template_name , {"form":self.form_class ,  'carrito': carrito})
@@ -89,31 +89,67 @@ class create_warehouse(CreateView):
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 
-        form = self.form_class(request.POST)
-        if form.is_valid():
+        if request.ajax_request:
+            # Access form data directly 
+            warehouse = request.POST.copy()  # Replace 'warehouse_name' with your actual field name
+            # Convertir listas a valores simples
+            new = {}
+            warehouse.pop('alto' , None)
+            for key in warehouse.keys():
+                # Verificar si el valor es una lista y tomar el primer elemento
+                new[key] = warehouse[key]
+            
+            new['usuario_id']=request.user.id
+            new['peso_caja']=1111
+            new['pago']=1111
+            new['regisro_cliente_id']=request.user.id
 
-            print("it is ok")
-            data = form.cleaned_data
-            data['usuario_id']=request.user.id
-            object_to_create = self.model(**data)
+            object_to_create = self.model(**new)
             object_to_create.save()
-
             nuevo_id = object_to_create.id
 
+            
             wherehouse = get_object_or_404(Wehrehouse, id=nuevo_id)
             carrito, created = Carrito.objects.get_or_create(usuario=request.user)
             carrito.wherehouses.add(wherehouse)
 
+            # Process the data as needed
+            return JsonResponse({'success': True, 'message': 'Warehouse created successfully!'})
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+        # form = self.form_class(request.POST)
+        # if form.is_valid():
+
+        #     print("it is ok")
+        #     data = form.cleaned_data
+        #     data['usuario_id']=request.user.id
+        #     object_to_create = self.model(**data)
+        #     object_to_create.save()
+
+        #     nuevo_id = object_to_create.id
+
+        #     wherehouse = get_object_or_404(Wehrehouse, id=nuevo_id)
+        #     carrito, created = Carrito.objects.get_or_create(usuario=request.user)
+        #     carrito.wherehouses.add(wherehouse)
+
             
-            return redirect('gestionurls:creating_warehouseName')
+            #return redirect('gestionurls:creating_warehouseName')
 
-        else:
-            print("it is not ok")    
+        # else:
+        #     print("it is not ok")    
 
-        return super().post(request, *args, **kwargs)
+        # return super().post(request, *args, **kwargs)
     
 
 
+def delete_wherehouse(request, wherehouse_id):
+
+    if request.method == 'DELETE':
+        print("entro en el delete")
+        wherehouse = get_object_or_404(Wehrehouse, id=wherehouse_id)
+        wherehouse.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
 
 #this class will show each warehouse previously created
 class show_werehouse(ListView):
