@@ -581,6 +581,9 @@
     </div> 
 </div>
 <script>
+   var csrfToken = '{{ csrf_token }}';
+  var urlpararegistrarcliente = "{% url 'gestionurls:registro_cliente' %}"
+
   // ......................................peticion  buscar Cliente...............................................
   var currentBuscarClienteUrl = "{% url 'gestionurls:buscarcliente' %}";
   console.log(currentBuscarClienteUrl)
@@ -800,12 +803,8 @@ fetch(deleteUrl, {
 
 
 </script>
-<script>
-  // Pasar la URL de Django a JavaScript
-  const currentBuscarClienteUrl = "{% url 'gestionurls:buscarcliente' %}";
 
-</script>
-<script src="{% static 'js/registro_cliente.js' %}"></script>
+<script src="{% static 'js/registro_warehouse.js' %}"></script>
 
 
 {% endblock contenido %}

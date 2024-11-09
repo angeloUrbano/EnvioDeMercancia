@@ -160,26 +160,53 @@ class show_werehouse(ListView):
 
 #vista de registro del clientes
 
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.views.generic import TemplateView
+from .models import Usuario, RegistroCliente
+
 class RegistroClientes(TemplateView):
     template_name = "gestion/registro_cliente.html"
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:            
-        #  usuario  por defecto(cambiar)
-        usuario = Usuario.objects.get(id=1) 
-        #  objeto RegistroCliente
+        # Usuario por defecto (cambiar)
+        try:
+            usuario = Usuario.objects.get(id=1) 
+        except Usuario.DoesNotExist:
+            return JsonResponse({'mensaje': 'Usuario no encontrado'}, status=404)
+
+        # Validar datos de entrada
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+        cedula = request.POST.get('cedula')
+        correo = request.POST.get('correo')
+        correo_aux = request.POST.get('correo_axi')
+        telefono = request.POST.get('telefono')
+        telefono_aux = request.POST.get('telefono_axi')
+
+        # Verifica que todos los campos necesarios estén presentes
+        if not all([nombre, apellido, cedula, correo, telefono]):
+            return HttpResponseBadRequest('Faltan campos requeridos.')
+
+        # Crear objeto RegistroCliente
         registro_cliente = RegistroCliente(
-        nombre=request.POST.get('nombre'),
-        Apellido=request.POST.get('apellido'),
-        cedula=request.POST.get('cedula'),
-        correo=request.POST.get('correo'),
-        correo_aux=request.POST.get('correo_axi'),
-        telefono=request.POST.get('telefono'),
-        telefono_aux=request.POST.get('telefono_axi'),
-        tipo_cliente='cliente1', # esta por defecto (falta registro cliente Ejecutivo)
-        usuario=usuario
-    )
-        registro_cliente.save() #guardado
-         # diccionario con los datos del registro_cliente
+            nombre=nombre,
+            Apellido=apellido,
+            cedula=cedula,
+            correo=correo,
+            correo_aux=correo_aux,
+            telefono=telefono,
+            telefono_aux=telefono_aux,
+            tipo_cliente='cliente1',  # por defecto
+            usuario=usuario
+        )
+        
+        # Guardar el registro
+        try:
+            registro_cliente.save()
+        except Exception as e:
+            return JsonResponse({'mensaje': 'Error al registrar el cliente', 'error': str(e)}, status=500)
+
+        # Diccionario con los datos del registro_cliente
         datos_registro_cliente = {
             'id': registro_cliente.id,
             'nombre': registro_cliente.nombre,
@@ -192,12 +219,9 @@ class RegistroClientes(TemplateView):
             'tipo_cliente': registro_cliente.tipo_cliente,
             'usuario': registro_cliente.usuario.username
         }
-        #   delvorver dicionario y mensaje
 
-        print("proceso de registrar usuario..............   ")
-        return JsonResponse({'mensaje': 'Cliente registrado con éxito', 'datos': datos_registro_cliente})
-
-       
+        print("Proceso de registrar usuario..............")
+        return JsonResponse({'mensaje': 'Cliente registrado con éxito', 'datos': datos_registro_cliente}) 
 
 
 
