@@ -205,6 +205,15 @@ formulario2Casilla.addEventListener('change', () => {
     });
     return;
   }
+  const formData = new FormData()
+    formData.append("nombre", nombre)
+    formData.append("apellido", apellido)
+    formData.append("cedula", cedula)
+    formData.append("correo", correo)
+    formData.append("correo_axi", correo_axi)
+    formData.append("telefono", telefono)
+    formData.append("telefono_axi", telefono_axi)
+
    const opciones = {
     method: 'POST',
     headers: {
@@ -234,7 +243,7 @@ console.log(" entro en el formData u el bucle")
   for (var pair of formData.entries()) {
    console.log(pair[0] + ': ' + pair[1]);
  }
-  const opciones = {
+  const opcionesAngelo2 = {
    method: 'POST',
    headers: {
      'X-Requested-With': 'XMLHttpRequest',
@@ -242,7 +251,7 @@ console.log(" entro en el formData u el bucle")
    },
    body: formData
  };
-fetch(urlpararegistrarcliente, opciones)
+fetch(urlpararegistrarcliente, opcionesAngelo2)
  .then(response => response.json())
  .then(data => {
    console.log(data);

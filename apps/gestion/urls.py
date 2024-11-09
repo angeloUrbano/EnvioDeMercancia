@@ -27,4 +27,6 @@ urlpatterns =[
 
 	path('agregar/<int:wherehouse_id>/', agregar_a_carrito, name='agregar_a_carrito'),
     path('carrito/', mostrar_carrito, name='mostrar_carrito'),
+    
+	path('pdfReport/' , pdfReport.as_view() ,name="printPdfName")
 ]

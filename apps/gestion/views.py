@@ -1,3 +1,4 @@
+import os
 import json
 from typing import Any
 
@@ -18,12 +19,193 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
+
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
+from reportlab.graphics.barcode import code128
+
+from reportlab.platypus import Table, TableStyle
+from reportlab.graphics import renderPDF
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet , ParagraphStyle
+
+
+
 class home(TemplateView):
     template_name = 'index.html'
     
 
 
 #this class will create the merchandiseregister  than arrive to the company 
+
+
+
+
+
+class pdfReport(ListView):
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+
+
+
+        downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
+        pdf_path = os.path.join(downloads_path, "warehouse_receipt_report.pdf")
+
+        # Create the PDF canvas
+        c = canvas.Canvas(pdf_path, pagesize=A4)
+        width, height = A4
+
+        # Header Section
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(30, height - 40, "ENEX VENEZUELA")
+        c.setFont("Helvetica", 10)
+        c.drawString(30, height - 60, "8534 NW 66TH ST MIAMI FL 33166")
+        c.drawString(30, height - 75, "Phone: (786) 2122423 / (786) 2122423 / Fax: (0)")
+        c.drawString(30, height - 90, "operaciones@taymarcargo.com")
+
+        # Warehouse Receipt Details
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(370, height - 40, "WareHouse Receipt #:")
+        c.setFont("Helvetica-Bold", 18)
+
+       # Configurar el código de barras
+        barcode_value = "12345678901223098763232323"  # El valor que deseas codificar
+        barcode = code128.Code128(barcode_value, barHeight=50)  # Crear un código de barras de tipo Code128
+
+       # Ajustar el tamaño del código de barras
+        barcode.drawHeight = 10  # Altura del código de barras
+        barcode.drawWidth = 6000  # Ancho del código de barras
+        barcode.wrapOn(c, 355, height - 100)  # Ajustar el tamaño del código de barras
+        barcode.drawOn(c, 355, height - 100)  # Dibujar el código de barras en el PDF
+
+            # Obtener estilos de párrafo
+        styles = getSampleStyleSheet() 
+        small_text_style = ParagraphStyle(
+            name='SmallText',
+            fontSize=5,  # Cambia este valor para ajustar el tamaño de la fuente
+            leading=5,   # Espaciado entre líneas
+        )     
+
+
+        c.drawString(500, height - 60, "246217")
+
+        c.setFont("Helvetica", 8)
+        c.drawString(300, height - 108, "Printed Date: 3/12/2024-2:19:56 PM | Received By: 3/12/2024 1:07:26 PM")
+
+        # Shipper and Consignee Information
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(30, height - 120, "Shipper Information")
+        c.drawString(300, height - 120, "Consignee Information")
+        c.setFont("Helvetica", 8)
+        c.drawString(30, height - 135, "8534 NW 66TH ST MIAMI FL 33166, MIAMI")
+        c.drawString(300, height - 135, "MARIO ZAMBRANO")
+        c.drawString(300, height - 150, "VALENCIA CARABOBO VENEZUELA")
+        c.drawString(300, height - 165, "VALENCIA, VENEZUELA")
+
+        # Office Destination and Payment Type Information
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(300, height - 190, "Oficina Destino: TITANIUM VALENCIA")
+        c.setFont("Helvetica", 8)
+        c.drawString(30, height - 190, "Payment Type | Shipment Type | # Casillero")
+        c.drawString(30, height - 205, "COD | POR DEFINIR | # 117")
+
+        # Draw a line to separate sections
+        c.line(30, height - 215, width - 30, height - 215)
+
+        # Package Details Table
+        data = [
+            ["Line/Qty", "Dimensions (In)", "Tracking", "Weight lb", "Vol lb", "Weight Ft3", "Vol Ft3", "Weight Kg"],
+            ["1/1", "19x7x15 BOX", "TBA312078550473", "5.00", "12.02", "0.48", "1.15", "2.2"],
+            ["2/1", "16x7x13 BOX", "TBA312077156361", "4.00", "8.77", "0.38", "0.84", "1.8"],
+            ["3/1", "14x6x11 BOX", "TBA312078028394", "3.00", "5.57", "0.29", "0.53", "1.3"],
+            ["4/1", "13x8x11 BOX", "TBA312079683675", "3.00", "6.89", "0.29", "0.66", "1.3"],
+            ["Pzas: 4", "", "", "15.00", "33.25", "1.44", "3.19", "6.6"]
+        ]
+
+
+
+
+        data2 = [
+            ["Shipper Information", "Consignee Information"],
+            [Paragraph("1/18534 NW 66TH ST MIAMI FL 33166, MIAMI", small_text_style), 
+            Paragraph("MARIO ZAMBRANO VALENCIA CARABOBO VENEZUELA VALENCIA, VENEZUELA", small_text_style)],
+            ["Payment Type | Shipment Type | # Casillero COD | POR DEFINIR | # 117", 
+            "Oficina Destino: TITANIUM VALENCIA"],
+        ]
+
+        # Crear la tabla con el ancho de las columnas
+        table2 = Table(data2, colWidths=[4.0 * inch, 3.5 * inch])
+
+
+        # Estilo de la tabla
+        table2.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),  # Encabezado
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  # Color del texto del encabezado
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinear texto en el centro
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Fuente del encabezado
+            ('FONTSIZE', (0, 0), (-1, -1), 6),  # Cambiar a un tamaño de fuente más pequeño para todas las celdas
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),  # Espaciado inferior del encabezado
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Fondo de las celdas
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Rejilla de la tabla
+        ]))
+
+        # Posicionar la tabla en el PDF
+        # Cambia el valor '30' a un número menor para mover la tabla más hacia la izquierda
+        table2.wrapOn(c, width, height)
+        table2.drawOn(c, 30, height - 400)  # Cambié el valor de 30 a 20
+
+
+
+
+        # Position table on the PDF
+        table2.wrapOn(c, width, height)
+        table2.drawOn(c, 30, height - 400)
+
+
+        # table = Table(data, colWidths=[0.75 * inch, 1.5 * inch, 1.5 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch])
+        # table.setStyle(TableStyle([
+        #     ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        #     ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        #     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        #     ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        #     ('FONTSIZE', (0, 0), (-1, 0), 8),
+        #     ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        #     ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        #     ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        # ]))
+
+        # # Position table on the PDF
+        # table.wrapOn(c, width, height)
+        # table.drawOn(c, 30, height - 400)
+
+        # Note and Footer
+        c.drawString(30, height - 420, "Entregado por: AMAZON")
+        c.drawString(300, height - 420, "Nombre Completo")
+        c.drawString(450, height - 420, "Fecha y Hora")
+
+        # Footer Note
+        footer_text = """
+        NOTA: SE ESTA ENTREGANDO ESTA CAJA COMPLETAMENTE SELLADA.
+        Certifico que este envío no contiene dinero, narcóticos, armas o dispositivos explosivos no autorizados. TITANIUM INTERNATIONAL INC no se hace
+        responsable de los artículos no retirados en los treinta (30) días siguientes a su recepción. Nuestra responsabilidad en caso de siniestros durante
+        el transporte aéreo o marítimo, extravío o robos será de $100 dólares por recibo de almacén, si el cliente no asegura la carga. Estoy de acuerdo
+        con que este envío esté sujeto a los controles de seguridad de la compañía y otras regulaciones gubernamentales."""
+
+        text = c.beginText(30, height - 470)
+        text.setFont("Helvetica", 6)
+        text.setLeading(8)
+        text.textLines(footer_text)
+        c.drawText(text)
+
+        # Save the PDF
+        c.save()
+        pdf_path
+
+
+        return super().get(request, *args, **kwargs)
 
 
 
