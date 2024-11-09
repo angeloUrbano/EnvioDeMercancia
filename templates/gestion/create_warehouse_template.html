@@ -95,37 +95,28 @@
                                 </div>
                                 <div class="offcanvas-body my-auto mx-0 flex-grow-0">
                                   <p class="text-center">
-                                    Copy code
-                                    {% if carrito %}
-                                        <ul>
-                                            {% for wherehouse in carrito.wherehouses.all %}
-                                                <li>
-                                                    {{ wherehouse }} - Valor: {{ wherehouse.valor }}
-                                                    <button class="abrir-modal" data-id="{{ wherehouse.id }}">Eliminar</button>
-                                                </li>
-                                                <!-- Modal para Confirmar Eliminación -->
-                                                <dialog id="modal-{{ wherehouse.id }}">
-                                                    <h2>Confirmar Eliminación</h2>
-                                                    <p>¿Estás seguro de que deseas eliminar "{{ wherehouse }}"?</p>
-                                                    <button class="cerrar-modal">Cancelar</button>
-                                                    <button class="confirmar-eliminar" data-id="{{ wherehouse.id }}">Eliminar</button>
-                                                </dialog>
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        <li>No hay elementos en el carrito.</li>
-                                    {% endif %}
-
+                                      <ul class="carrito-list">
+                                          {% if carrito %}
+                                              {% for wherehouse in carrito.wherehouses.all %}
+                                                  <li>
+                                                      {{ wherehouse }} - Valor: {{ wherehouse.valor }}
+                                                      <button class="abrir-modal" data-id="{{ wherehouse.id }}">Eliminar</button>
+                                                      <!-- Modal para Confirmar Eliminación -->
+                                                      <dialog id="modal-{{ wherehouse.id }}">
+                                                          <h2>Confirmar Eliminación</h2>
+                                                          <p>¿Estás seguro de que deseas eliminar "{{ wherehouse }}"?</p>
+                                                          <button class="cerrar-modal">Cancelar</button>
+                                                          <button class="confirmar-eliminar" data-id="{{ wherehouse.id }}" data-url="{% url 'gestionurls:delete_wherehouse' wherehouse_id=wherehouse.id %}">Eliminar</button>                                                      </dialog>
+                                                  </li>
+                                              {% endfor %}
+                                          {% else %}
+                                              <li>No hay elementos en el carrito.</li>
+                                          {% endif %}
+                                      </ul>
                                   </p>
                                   <button type="button" class="btn btn-primary mb-2 d-grid w-100">Enviar</button>
-                                  <button
-                                    type="button"
-                                    class="btn btn-outline-secondary d-grid w-100"
-                                    data-bs-dismiss="offcanvas"
-                                  >
-                                    Cancelar
-                                  </button>
-                                </div>
+                                  <button type="button" class="btn btn-outline-secondary d-grid w-100" data-bs-dismiss="offcanvas">Cancelar</button>
+                              </div>
                               </div>
                             </div>
                           </div>
@@ -703,100 +694,137 @@ let buttonFormWhereHouseJs = document.getElementById("buttonSaveFormWharehouse")
 
 buttonFormWhereHouseJs.addEventListener("click", ()=>{
   alert("se toco el botin ")
-  // id="shipper"
-  // id="recibido_de"
-  // id="ancho"
-  // id="Profu"
-  // id="Tracking"
-  // id="contenido"
-  // id="valor"
-  // id="comentario"
-  // id="observacion"
+
   var UrlCreatingWherehouse = "{% url 'gestionurls:creating_warehouseName' %}";
 
-let form = document.getElementById("formWherehouse");
-const formData = new FormData(form);
-for (const [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
+  let form = document.getElementById("formWherehouse");
+  const formData = new FormData(form);
+  for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+  }
+
+  console.log(formData);
+
+  const opciones2 = {
+    method: 'POST',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': '{{ csrf_token }}',
+      // Remove Content-Type header
+    },
+    body: formData // Send the FormData directly
+  };
+
+  fetch(UrlCreatingWherehouse, opciones2)
+    .then(response => {
+      if (response.ok) {
+        return response.json(); // Return the parsed JSON
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    })
+    .then(data => {
+      console.log(data); 
+      updateCarritoUI(data.carrito);
+    })
+    .catch(error => console.error('Error:', error));
+
+
+
+})
+
+
+
+function updateCarritoUI(carrito) {
+    const carritoContainer = document.querySelector('.offcanvas-body .carrito-list');
+
+    // Clear previous items
+    carritoContainer.innerHTML = '';
+
+    // Check if there are any wherehouses in the carrito
+    if (carrito.wherehouses && carrito.wherehouses.length > 0) {
+        carrito.wherehouses.forEach(wherehouse => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+
+            // Assuming 'valor' is a field you want to display
+            li.innerHTML = `
+                ID: ${wherehouse.id} - Tracking: ${wherehouse.Tracking_num} - Contenido: ${wherehouse.contenido}
+                <button class="abrir-modal" data-id="${wherehouse.id}">Eliminar</button>
+                <!-- Modal para Confirmar Eliminación -->
+                <dialog id="modal-${wherehouse.id}">
+                    <h2>Confirmar Eliminación</h2>
+                    <p>¿Estás seguro de que deseas eliminar "${wherehouse.id}"?</p>
+                    <button class="cerrar-modal">Cancelar</button>
+                    <button class="confirmar-eliminar" data-id="${wherehouse.id}" data-url="${wherehouse.deleteUrl}">Eliminar</button>
+                </dialog>
+            `;
+            carritoContainer.appendChild(li);
+        });
+    } else {
+        carritoContainer.innerHTML = '<li>No hay elementos en el carrito.</li>';
+    }
 }
 
-console.log(formData);
 
-const opciones2 = {
-  method: 'POST',
-  headers: {
-    'X-Requested-With': 'XMLHttpRequest',
-    'X-CSRFToken': '{{ csrf_token }}',
-    // Remove Content-Type header
-  },
-  body: formData // Send the FormData directly
-};
-
-fetch(UrlCreatingWherehouse, opciones2)
-  .then(response => {
-    if (response.ok) {
-      return response.json(); // Return the parsed JSON
-    } else {
-      throw new Error('Network response was not ok');
-    }
-  })
-  .then(data => {
-    console.log(data); // Handle the parsed JSON data
-  })
-  .catch(error => console.error('Error:', error));
-
-
-
-})
-
-
-
-// Obtener todos los botones de abrir modal
-const abrirModales = document.querySelectorAll('.abrir-modal');
-
-// Función para abrir el modal
-abrirModales.forEach(boton => {
-    boton.addEventListener('click', () => {
-        const modalId = `modal-${boton.getAttribute('data-id')}`; // Obtener el ID del modal correspondiente
+// Event delegation for handling clicks on the offcanvas body
+document.querySelector('.offcanvas-body').addEventListener('click', function(event) {
+    // Open modal
+    if (event.target.classList.contains('abrir-modal')) {
+        const modalId = `modal-${event.target.getAttribute('data-id')}`;
         const modal = document.getElementById(modalId);
-        modal.showModal(); // Muestra el modal
-    });
-});
+        modal.showModal(); // Show the modal
+    }
 
-// Función para cerrar el modal
-document.querySelectorAll('.cerrar-modal').forEach(botonCerrar => {
-    botonCerrar.addEventListener('click', () => {
-        const modal = botonCerrar.closest('dialog'); // Encuentra el modal más cercano
-        modal.close(); // Cierra el modal
-    });
-});
+    // Close modal
+    if (event.target.classList.contains('cerrar-modal')) {
+        const modal = event.target.closest('dialog'); // Find the closest modal
+        modal.close(); // Close the modal
+    }
 
-// Función para confirmar la eliminación
-document.querySelectorAll('.confirmar-eliminar').forEach(botonEliminar => {
-    botonEliminar.addEventListener('click', function() {
-        const itemId = this.getAttribute('data-id'); // Obtener el ID del elemento
-        const deleteUrl = `/delete_wherehouse/${itemId}/`; // Construir la URL para eliminar el elemento
+    // Confirm deletion
+    if (event.target.classList.contains('confirmar-eliminar')) {
+        const itemId = event.target.getAttribute('data-id'); // Get the ID of the item
+        const deleteUrl = event.target.getAttribute('data-url'); // Get the URL from the data attribute
 
-        // Realizar la solicitud de eliminación
+        // Perform the deletion request
         console.log(`Sending DELETE request to: ${deleteUrl}`);
-fetch(deleteUrl, {
-    method: 'DELETE',
-    headers: {
-        'X-CSRFToken': '{{ csrf_token }}',
-    },
-})
+        fetch(deleteUrl, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // Ensure CSRF token is available
+            },
+        })
         .then(response => {
             if (response.ok) {
-                // Eliminar el elemento del DOM
-                const modal = this.closest('dialog');
-                modal.close(); // Cerrar el modal
-                botonEliminar.closest('li').remove(); // Eliminar el elemento de la lista
+                const modal = event.target.closest('dialog');
+                modal.close(); // Close the modal
+                event.target.closest('li').remove(); // Remove the item from the list
             } else {
                 alert('Error al eliminar el elemento.');
             }
         });
-    });
+    }
 });
+
+// Example AJAX call to update the carrito
+function fetchCarrito() {
+    fetch(UrlCreatingWherehouse, opciones2)
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // Return the parsed JSON
+            } else {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .then(data => {
+            console.log(data); // Check the data structure in the console
+            updateCarritoUI(data.carrito);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
 
 
 </script>

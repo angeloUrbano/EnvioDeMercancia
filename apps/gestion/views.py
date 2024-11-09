@@ -16,9 +16,11 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
 class home(TemplateView):
     template_name = 'index.html'
+    
 
 
 #this class will create the merchandiseregister  than arrive to the company 
@@ -114,7 +116,35 @@ class create_warehouse(CreateView):
             carrito.wherehouses.add(wherehouse)
 
             # Process the data as needed
-            return JsonResponse({'success': True, 'message': 'Warehouse created successfully!'})
+            carrito = Carrito.objects.filter(usuario=request.user).first()
+
+              # Check if carrito exists to avoid AttributeError
+            if carrito:
+                # Prepare the carrito data
+                carrito_data = {
+                    'id': carrito.id,
+                    'usuario_id': carrito.usuario.id,  # User ID
+                    'fecha_creacion': carrito.fecha_creacion.isoformat(),  # Format date as ISO string
+                    'wherehouses': []
+                }
+
+                # Iterate through wherehouses to add delete URLs
+                for wherehouse in carrito.wherehouses.all():  # Assuming you want to iterate through related wherehouses
+                    carrito_data['wherehouses'].append({
+                        'id': wherehouse.id,
+                        'tipo_persona': wherehouse.tipo_persona,
+                        'Tracking_num': wherehouse.Tracking_num,
+                        'contenido': wherehouse.contenido,
+                        'deleteUrl': reverse('gestionurls:delete_wherehouse', kwargs={'wherehouse_id': wherehouse.id})  # Generate delete URL
+                    })
+            else:
+                carrito_data = {}
+
+
+
+
+            return JsonResponse({'success': True, 'message': 'Warehouse created successfully!', 'carrito': carrito_data})
+
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
         # form = self.form_class(request.POST)
