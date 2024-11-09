@@ -140,43 +140,70 @@ formulario2Casilla.addEventListener('change', () => {
       });
       return;
     }
-    const formElement = document.getElementById('formulario1');
+   // Peticion guardado de los datos
+  const formData = new FormData()
+  formData.append("nombre", nombre)
+  formData.append("apellido", apellido)
+  formData.append("cedula", cedula)
+  formData.append("correo", correo)
+  formData.append("correo_axi", correo_axi)
+  formData.append("telefono", telefono)
+  formData.append("telefono_axi", telefono_axi)
 
-// Crea un objeto FormData a partir del formulario
-const formData = new FormData(formElement)
-console.log(" existe el formData")
-console.log(formData)
-    const opciones = {
-      method: 'POST',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': csrfToken,
-      },
-      body: formData
-    };
-    
-    console.log("Entró en el formData y el bucle");
-    console.log(formData);
-    
-    // Imprimir las entradas de formData
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
+console.log(" entro en el formData u el bucle")
+ console.log(formData)
+ for (var pair of formData.entries()) {
+  console.log(pair[0] + ': ' + pair[1]);
+}
+ const opciones = {
+  method: 'POST',
+  headers: {
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-CSRFToken': csrfToken,
+  },
+  body: formData
+};
+fetch(urlpararegistrarcliente, opciones)
+.then(response => response.json())
+.then(data => {
+  console.log(data);
+  //  datos del registro_cliente
+  const registroCliente = data.datos;
+  console.log(registroCliente);
+  //  aciones con los datos
+  Swal.fire({
+    title: 'Éxito',
+    text: 'Cliente guardado con  éxito.',
+    icon: 'success',
+    confirmButtonText: 'Aceptar',
+    backdrop: true, // Enables backdrop
+    timer: 3000, // Auto-close after 3 seconds
+    willClose: () => {
+        // Optional callback function after the alert closes
+        console.log('Success alert closed');
     }
-    
-    // No vuelvas a declarar 'opciones', simplemente usa la ya creada
-    fetch(urlpararegistrarcliente, opciones)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        // datos del registro_cliente
-        const registroCliente = data.datos;
-        console.log(registroCliente);
-        // acciones con los datos
-        Swal.fire({
-          title: 'Éxito',
-          text: 'Cliente registrado con éxito',
-          icon: 'success',
-        });
-      })
-      .catch(error => console.error(error));
-    }
+});
+})
+.catch(error => console.error(error));
+ 
+}
+
+// Función para validar el Formulario 2
+function validateFormulario2(event) {
+ event.preventDefault(); // Prevent the form from submitting
+ const correo = document.getElementById('correo').value;
+
+ // Validate the input using a regular expression
+ const correoRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Allow valid email addresses
+
+ if (!correoRegex.test(correo)) {
+   alert('Por favor, ingrese un correo electrónico válido');
+   return;
+ }
+
+ // falta validacioness
+
+ //  peticion ajax de formulario2 
+
+ enviarFormulario2.submit();
+}

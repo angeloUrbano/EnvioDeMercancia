@@ -618,13 +618,22 @@
 
     if (transformarToJson && typeof transformarToJson === 'object') {
         if (transformarToJson.mensaje === "El Cliente no Existe") {
-            if (confirm("El Cliente no Existe. ¿Desea crear nuevo Cliente?")) {
-                console.log("Proceso de creación de cliente");
-                checkboxContenedor.style.display = 'block'; // Cambia el estilo display a block si se ha confirmado
-                formulario3Contenedor.style.display = 'none';
-            } else {
-                console.log("Cancelar");
-            }
+          Swal.fire({
+    title: 'Confirmación',
+    text: 'El Cliente no Existe. ¿Desea crear un nuevo Cliente?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí',
+    cancelButtonText: 'No'
+}).then((result) => {
+    if (result.isConfirmed) {
+        console.log("Proceso de creación de cliente");
+        checkboxContenedor.style.display = 'block'; // Cambia el estilo display a block si se ha confirmado
+        formulario3Contenedor.style.display = 'none';
+    } else {
+        console.log("Cancelar");
+    }
+});
         } else {
             console.log("Existe el Cliente");
             console.log(transformarToJson);
