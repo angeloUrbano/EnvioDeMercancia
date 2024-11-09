@@ -234,7 +234,7 @@ console.log(" entro en el formData u el bucle")
   for (var pair of formData.entries()) {
    console.log(pair[0] + ': ' + pair[1]);
  }
-  const opciones = {
+  const opcionesAngelo2 = {
    method: 'POST',
    headers: {
      'X-Requested-With': 'XMLHttpRequest',
@@ -242,7 +242,7 @@ console.log(" entro en el formData u el bucle")
    },
    body: formData
  };
-fetch(urlpararegistrarcliente, opciones)
+fetch(urlpararegistrarcliente, opcionesAngelo2)
  .then(response => response.json())
  .then(data => {
    console.log(data);

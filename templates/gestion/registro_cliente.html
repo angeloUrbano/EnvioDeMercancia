@@ -355,7 +355,7 @@
 
     const inputValue = document.getElementById('input-mostrar').value;
     console.log(inputValue)
-    const opciones = {
+    const opcionAngelo = {
       method: 'POST',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -367,7 +367,7 @@
       })
     };
 
-    let res =  await fetch(currentBuscarClienteUrl, opciones)
+    let res =  await fetch(currentBuscarClienteUrl, opcionAngelo)
     let transformarToJson = await res.json()
 
     if (res.ok) {
