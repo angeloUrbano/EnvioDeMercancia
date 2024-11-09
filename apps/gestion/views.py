@@ -25,7 +25,14 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
+from reportlab.graphics.barcode import code128
+
 from reportlab.platypus import Table, TableStyle
+from reportlab.graphics import renderPDF
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet , ParagraphStyle
+
+
 
 class home(TemplateView):
     template_name = 'index.html'
@@ -61,12 +68,32 @@ class pdfReport(ListView):
 
         # Warehouse Receipt Details
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(400, height - 40, "WareHouse Receipt #:")
+        c.drawString(370, height - 40, "WareHouse Receipt #:")
         c.setFont("Helvetica-Bold", 18)
-        c.drawString(500, height - 40, "246217")
+
+       # Configurar el código de barras
+        barcode_value = "12345678901223098763232323"  # El valor que deseas codificar
+        barcode = code128.Code128(barcode_value, barHeight=50)  # Crear un código de barras de tipo Code128
+
+       # Ajustar el tamaño del código de barras
+        barcode.drawHeight = 10  # Altura del código de barras
+        barcode.drawWidth = 6000  # Ancho del código de barras
+        barcode.wrapOn(c, 355, height - 100)  # Ajustar el tamaño del código de barras
+        barcode.drawOn(c, 355, height - 100)  # Dibujar el código de barras en el PDF
+
+            # Obtener estilos de párrafo
+        styles = getSampleStyleSheet() 
+        small_text_style = ParagraphStyle(
+            name='SmallText',
+            fontSize=5,  # Cambia este valor para ajustar el tamaño de la fuente
+            leading=5,   # Espaciado entre líneas
+        )     
+
+
+        c.drawString(500, height - 60, "246217")
 
         c.setFont("Helvetica", 8)
-        c.drawString(400, height - 55, "Printed Date: 3/12/2024-2:19:56 PM | Received By: 3/12/2024 1:07:26 PM")
+        c.drawString(300, height - 108, "Printed Date: 3/12/2024-2:19:56 PM | Received By: 3/12/2024 1:07:26 PM")
 
         # Shipper and Consignee Information
         c.setFont("Helvetica-Bold", 10)
@@ -98,21 +125,61 @@ class pdfReport(ListView):
             ["Pzas: 4", "", "", "15.00", "33.25", "1.44", "3.19", "6.6"]
         ]
 
-        table = Table(data, colWidths=[0.75 * inch, 1.5 * inch, 1.5 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch])
-        table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+
+
+
+        data2 = [
+            ["Shipper Information", "Consignee Information"],
+            [Paragraph("1/18534 NW 66TH ST MIAMI FL 33166, MIAMI", small_text_style), 
+            Paragraph("MARIO ZAMBRANO VALENCIA CARABOBO VENEZUELA VALENCIA, VENEZUELA", small_text_style)],
+            ["Payment Type | Shipment Type | # Casillero COD | POR DEFINIR | # 117", 
+            "Oficina Destino: TITANIUM VALENCIA"],
+        ]
+
+        # Crear la tabla con el ancho de las columnas
+        table2 = Table(data2, colWidths=[4.0 * inch, 3.5 * inch])
+
+
+        # Estilo de la tabla
+        table2.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),  # Encabezado
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  # Color del texto del encabezado
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinear texto en el centro
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Fuente del encabezado
+            ('FONTSIZE', (0, 0), (-1, -1), 6),  # Cambiar a un tamaño de fuente más pequeño para todas las celdas
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),  # Espaciado inferior del encabezado
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Fondo de las celdas
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Rejilla de la tabla
         ]))
 
+        # Posicionar la tabla en el PDF
+        # Cambia el valor '30' a un número menor para mover la tabla más hacia la izquierda
+        table2.wrapOn(c, width, height)
+        table2.drawOn(c, 30, height - 400)  # Cambié el valor de 30 a 20
+
+
+
+
         # Position table on the PDF
-        table.wrapOn(c, width, height)
-        table.drawOn(c, 30, height - 400)
+        table2.wrapOn(c, width, height)
+        table2.drawOn(c, 30, height - 400)
+
+
+        # table = Table(data, colWidths=[0.75 * inch, 1.5 * inch, 1.5 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch])
+        # table.setStyle(TableStyle([
+        #     ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        #     ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        #     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        #     ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        #     ('FONTSIZE', (0, 0), (-1, 0), 8),
+        #     ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        #     ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        #     ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        # ]))
+
+        # # Position table on the PDF
+        # table.wrapOn(c, width, height)
+        # table.drawOn(c, 30, height - 400)
 
         # Note and Footer
         c.drawString(30, height - 420, "Entregado por: AMAZON")

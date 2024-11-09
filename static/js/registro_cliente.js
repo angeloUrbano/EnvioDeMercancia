@@ -205,6 +205,15 @@ formulario2Casilla.addEventListener('change', () => {
     });
     return;
   }
+  const formData = new FormData()
+    formData.append("nombre", nombre)
+    formData.append("apellido", apellido)
+    formData.append("cedula", cedula)
+    formData.append("correo", correo)
+    formData.append("correo_axi", correo_axi)
+    formData.append("telefono", telefono)
+    formData.append("telefono_axi", telefono_axi)
+
    const opciones = {
     method: 'POST',
     headers: {
