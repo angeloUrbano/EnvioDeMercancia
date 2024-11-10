@@ -15,6 +15,62 @@
     #formulario3-contenedor {
       display: block;
     }
+    .offcanvas-body {
+      background-color: #f8f9fa; /* Color de fondo claro */
+      padding: 20px; /* Espaciado interno */
+  }
+
+  .list-group-item {
+      background-color: #ffffff; /* Fondo blanco para los elementos de la lista */
+      border: 1px solid #dee2e6; /* Color del borde */
+      border-radius: 5px; /* Bordes redondeados */
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para el contenedor */
+  }
+
+  .modal {
+      background-color: #ffffff; /* Fondo blanco para el modal */
+      border: none; /* Sin borde */
+      border-radius: 8px; /* Bordes redondeados */
+      padding: 20px; /* Espaciado interno */
+  }
+
+  .modal h2 {
+      margin-bottom: 15px; /* Espaciado inferior para el título del modal */
+  }
+
+  .modal p {
+      margin-bottom: 20px; /* Espaciado inferior para el texto del modal */
+  }
+
+  .btn {
+      margin-left: 5px; /* Espaciado entre botones */
+  }
+
+  .btn-danger {
+      background-color: #dc3545; /* Color de fondo para botones de eliminar */
+      color: white; /* Color del texto en botones de eliminar */
+  }
+
+  .btn-danger:hover {
+      background-color: #c82333; /* Color de fondo al pasar el mouse para eliminar */
+  }
+
+  .btn-secondary {
+      background-color: #6c757d; /* Color de fondo para botones secundarios */
+      color: white; /* Color del texto en botones secundarios */
+  }
+
+  .btn-secondary:hover {
+      background-color: #5a6268; /* Color de fondo al pasar el mouse para cancelar */
+  }
+
+  .mb-2 {
+      margin-bottom: 0.5rem; /* Espaciado inferior para los elementos de la lista */
+  }
+
+  .list-group-item:hover {
+      background-color: #f1f1f1; /* Color de fondo al pasar el mouse */
+    
   </style>
 {% endblock style %}
 
@@ -100,11 +156,11 @@
                                               {% for wherehouse in carrito.wherehouses.all %}
                                                   <li>
                                                       {{ wherehouse }} - Valor: {{ wherehouse.valor }}
-                                                      <button class="abrir-modal" data-id="{{ wherehouse.id }}">Eliminar</button>
+                                                      <button class="abrir-modal btn btn-primary" data-id="{{ wherehouse.id }}">Eliminar</button>
                                                       <!-- Modal para Confirmar Eliminación -->
                                                       <dialog id="modal-{{ wherehouse.id }}">
                                                           <h2>Confirmar Eliminación</h2>
-                                                          <p>¿Estás seguro de que deseas eliminar "{{ wherehouse }}"?</p>
+                                                          <p>¿Estás seguro de que deseas eliminarrrr "{{ wherehouse.id }}"?</p>
                                                           <button class="cerrar-modal">Cancelar</button>
                                                           <button class="confirmar-eliminar" data-id="{{ wherehouse.id }}" data-url="{% url 'gestionurls:delete_wherehouse' wherehouse_id=wherehouse.id %}">Eliminar</button>                                                      </dialog>
                                                   </li>
@@ -244,12 +300,12 @@
                                   <input
                                     type="text"
                                     id="contenido"
-                                   name="contenido"
+                                    name="contenido"
                                     class="form-control"
                                     placeholder="1.20"
                                     aria-label="1.20"
                                     aria-describedby="basic-icon-default-company2"
-                                  />
+                                  /> 
                                 </div>    
                             </div>
                             <div class="col-3">
@@ -278,11 +334,8 @@
                                   >
                                       <img src="{% static 'assets/img/favicon/delete.png' %}" alt="Borrar" style="width: 44px; height: auto;" />
                                   </button>
-                              </div>    
-
-                             
-                            </div>
-                            
+                              </div>                               
+                            </div>                         
                         </div>
                         <div class="row">
                             <label class="form-label" for="basic-icon-default-company">comentario</label>
@@ -745,6 +798,11 @@ buttonFormWhereHouseJs.addEventListener("click", ()=>{
 
 })
 
+document.querySelectorAll('.abrir-modal').forEach(button => {
+  const dataUrl = button.getAttribute('data-url');
+  console.log(`ID: ${button.getAttribute('data-id')}, data-url: ${dataUrl}`);
+});
+
 
 
 function updateCarritoUI(carrito) {
@@ -753,67 +811,72 @@ function updateCarritoUI(carrito) {
     // Clear previous items
     carritoContainer.innerHTML = '';
 
-    // Check if there are any wherehouses in the carrito
+    // Check if there are any warehouses in the carrito
     if (carrito.wherehouses && carrito.wherehouses.length > 0) {
         carrito.wherehouses.forEach(wherehouse => {
             const li = document.createElement('li');
-            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'border', 'rounded', 'mb-2');
 
-            // Assuming 'valor' is a field you want to display
             li.innerHTML = `
-                ID: ${wherehouse.id} - Tracking: ${wherehouse.Tracking_num} - Contenido: ${wherehouse.contenido}
-                <button class="abrir-modal" data-id="${wherehouse.id}">Eliminar</button>
-                <!-- Modal para Confirmar Eliminación -->
-                <dialog id="modal-${wherehouse.id}">
-                    <h2>Confirmar Eliminación</h2>
-                    <p>¿Estás seguro de que deseas eliminar "${wherehouse.id}"?</p>
-                    <button class="cerrar-modal">Cancelar</button>
-                    <button class="confirmar-eliminar" data-id="${wherehouse.id}" data-url="${wherehouse.deleteUrl}">Eliminar</button>
-                </dialog>
+                <div>
+                    <strong>ID:</strong> ${wherehouse.id} <br>
+                    <strong>Tracking:</strong> ${wherehouse.Tracking_num} <br>
+                    <strong>Contenido:</strong> ${wherehouse.contenido}
+                </div>
+                <button class="abrir-modal btn btn-danger" data-id="${wherehouse.id}" data-url="${wherehouse.deleteUrl}">Eliminar</button>
             `;
             carritoContainer.appendChild(li);
         });
     } else {
-        carritoContainer.innerHTML = '<li>No hay elementos en el carrito.</li>';
+        carritoContainer.innerHTML = '<li class="list-group-item">No hay elementos en el carrito.</li>';
     }
 }
 
-
 // Event delegation for handling clicks on the offcanvas body
 document.querySelector('.offcanvas-body').addEventListener('click', function(event) {
-    // Open modal
+    // Confirm deletion using SweetAlert2
     if (event.target.classList.contains('abrir-modal')) {
-        const modalId = `modal-${event.target.getAttribute('data-id')}`;
-        const modal = document.getElementById(modalId);
-        modal.showModal(); // Show the modal
-    }
-
-    // Close modal
-    if (event.target.classList.contains('cerrar-modal')) {
-        const modal = event.target.closest('dialog'); // Find the closest modal
-        modal.close(); // Close the modal
-    }
-
-    // Confirm deletion
-    if (event.target.classList.contains('confirmar-eliminar')) {
         const itemId = event.target.getAttribute('data-id'); // Get the ID of the item
         const deleteUrl = event.target.getAttribute('data-url'); // Get the URL from the data attribute
-
-        // Perform the deletion request
-        console.log(`Sending DELETE request to: ${deleteUrl}`);
-        fetch(deleteUrl, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}', // Ensure CSRF token is available
-            },
-        })
-        .then(response => {
-            if (response.ok) {
-                const modal = event.target.closest('dialog');
-                modal.close(); // Close the modal
-                event.target.closest('li').remove(); // Remove the item from the list
-            } else {
-                alert('Error al eliminar el elemento.');
+        console.log(event)
+        console.log("ver la rutas......")
+        console.log(itemId , "informacion del id ")
+        console.log(deleteUrl , "informacion de la url")
+        Swal.fire({
+            title: 'Confirmar Eliminación',
+            text: `¿Estás seguro de que deseas eliminarrrrr "${itemId}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Perform the deletion request
+                console.log(`Sending DELETE request to: ${deleteUrl}`);
+                fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}', // Ensure CSRF token is available
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire(
+                            'Eliminado!',
+                            `El elemento "${itemId}" ha sido eliminado.`,
+                            'success'
+                        );
+                        event.target.closest('li').remove(); // Remove the item from the list
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Error al eliminar el elemento.',
+                            'error'
+                        );
+                    }
+                });
             }
         });
     }
@@ -838,6 +901,7 @@ function fetchCarrito() {
         });
 }
 
+// Call fetchCarrito to load the initial data
 
 </script>
 
