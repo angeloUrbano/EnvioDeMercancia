@@ -31,7 +31,7 @@ from reportlab.platypus import Table, TableStyle
 from reportlab.graphics import renderPDF
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet , ParagraphStyle
-
+from reportlab.lib.pagesizes import letter
 
 
 class home(TemplateView):
@@ -46,6 +46,8 @@ class home(TemplateView):
 
 
 class pdfReport(ListView):
+    model = Wehrehouse
+    template_name = 'gestion/PDFGuide.html'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
@@ -85,7 +87,7 @@ class pdfReport(ListView):
         styles = getSampleStyleSheet() 
         small_text_style = ParagraphStyle(
             name='SmallText',
-            fontSize=5,  # Cambia este valor para ajustar el tamaño de la fuente
+            fontSize=8,  # Cambia este valor para ajustar el tamaño de la fuente
             leading=5,   # Espaciado entre líneas
         )     
 
@@ -95,25 +97,9 @@ class pdfReport(ListView):
         c.setFont("Helvetica", 8)
         c.drawString(300, height - 108, "Printed Date: 3/12/2024-2:19:56 PM | Received By: 3/12/2024 1:07:26 PM")
 
-        # Shipper and Consignee Information
-        c.setFont("Helvetica-Bold", 10)
-        c.drawString(30, height - 120, "Shipper Information")
-        c.drawString(300, height - 120, "Consignee Information")
-        c.setFont("Helvetica", 8)
-        c.drawString(30, height - 135, "8534 NW 66TH ST MIAMI FL 33166, MIAMI")
-        c.drawString(300, height - 135, "MARIO ZAMBRANO")
-        c.drawString(300, height - 150, "VALENCIA CARABOBO VENEZUELA")
-        c.drawString(300, height - 165, "VALENCIA, VENEZUELA")
-
-        # Office Destination and Payment Type Information
-        c.setFont("Helvetica-Bold", 10)
-        c.drawString(300, height - 190, "Oficina Destino: TITANIUM VALENCIA")
-        c.setFont("Helvetica", 8)
-        c.drawString(30, height - 190, "Payment Type | Shipment Type | # Casillero")
-        c.drawString(30, height - 205, "COD | POR DEFINIR | # 117")
 
         # Draw a line to separate sections
-        c.line(30, height - 215, width - 30, height - 215)
+        c.line(30, height - 280, width - 30, height - 280)
 
         # Package Details Table
         data = [
@@ -130,10 +116,10 @@ class pdfReport(ListView):
 
         data2 = [
             ["Shipper Information", "Consignee Information"],
-            [Paragraph("1/18534 NW 66TH ST MIAMI FL 33166, MIAMI", small_text_style), 
-            Paragraph("MARIO ZAMBRANO VALENCIA CARABOBO VENEZUELA VALENCIA, VENEZUELA", small_text_style)],
-            ["Payment Type | Shipment Type | # Casillero COD | POR DEFINIR | # 117", 
-            "Oficina Destino: TITANIUM VALENCIA"],
+            [Paragraph("1/18534 NW 66TH ST MIAMI FL 33166, MIAMI"), 
+            Paragraph("MARIO ZAMBRANO  VALENCIA CARABOBO VENEZUELA <br/> <br/> VALENCIA, VENEZUELA", small_text_style)],
+            [Paragraph("Payment Type | Shipment Type | <br/> # Casillero COD | POR DEFINIR | # 117"), 
+            Paragraph("Oficina Destino: TITANIUM VALENCIA")],
         ]
 
         # Crear la tabla con el ancho de las columnas
@@ -146,47 +132,47 @@ class pdfReport(ListView):
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  # Color del texto del encabezado
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinear texto en el centro
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Fuente del encabezado
-            ('FONTSIZE', (0, 0), (-1, -1), 6),  # Cambiar a un tamaño de fuente más pequeño para todas las celdas
+            ('FONTSIZE', (0, 0), (-1, -1), 8),  # Cambiar a un tamaño de fuente más pequeño para todas las celdas
             ('BOTTOMPADDING', (0, 0), (-1, 0), 8),  # Espaciado inferior del encabezado
             ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Fondo de las celdas
             ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Rejilla de la tabla
+            ('TOPPADDING', (0, 1), (1, 1), 15),  # Espaciado superior de la segunda fila
+            ('BOTTOMPADDING', (0, 1), (1, 1), 15),  # Espaciado inferior de la segunda fila
+        
         ]))
 
         # Posicionar la tabla en el PDF
         # Cambia el valor '30' a un número menor para mover la tabla más hacia la izquierda
         table2.wrapOn(c, width, height)
-        table2.drawOn(c, 30, height - 400)  # Cambié el valor de 30 a 20
+        table2.drawOn(c, 30, height - 211)  # Cambié el valor de 30 a 20
 
 
 
+        table = Table(data, colWidths=[0.75 * inch, 1.5 * inch, 1.5 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch])
+        table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),  # Color de fondo del encabezado
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  # Color del texto del encabezado
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinear texto en el centro
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Fuente del encabezado
+        ('FONTSIZE', (0, 0), (-1, 0), 8),  # Tamaño de fuente del encabezado
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),  # Espaciado inferior del encabezado
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Fondo de las celdas
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Rejilla de la tabla
+        ('TOPPADDING', (0, 1), (-1, -1), 15),  # Espaciado superior para todas las filas
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 15),  # Espaciado inferior para todas las filas
+    ]))
 
-        # Position table on the PDF
-        table2.wrapOn(c, width, height)
-        table2.drawOn(c, 30, height - 400)
-
-
-        # table = Table(data, colWidths=[0.75 * inch, 1.5 * inch, 1.5 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch, 0.75 * inch])
-        # table.setStyle(TableStyle([
-        #     ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        #     ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        #     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        #     ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        #     ('FONTSIZE', (0, 0), (-1, 0), 8),
-        #     ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
-        #     ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        #     ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-        # ]))
-
-        # # Position table on the PDF
-        # table.wrapOn(c, width, height)
-        # table.drawOn(c, 30, height - 400)
+        #Position table on the PDF
+        table.wrapOn(c, width, height)
+        table.drawOn(c, 30, height - 575)
 
         # Note and Footer
-        c.drawString(30, height - 420, "Entregado por: AMAZON")
-        c.drawString(300, height - 420, "Nombre Completo")
-        c.drawString(450, height - 420, "Fecha y Hora")
+        c.drawString(30, height - 620, "Entregado por: AMAZON")
+        c.drawString(300, height - 620, "Nombre Completo")
+        c.drawString(450, height - 620, "Fecha y Hora")
 
-        # Footer Note
+       # Define el texto del pie de página
+        # Define el texto del pie de página
         footer_text = """
         NOTA: SE ESTA ENTREGANDO ESTA CAJA COMPLETAMENTE SELLADA.
         Certifico que este envío no contiene dinero, narcóticos, armas o dispositivos explosivos no autorizados. TITANIUM INTERNATIONAL INC no se hace
@@ -194,13 +180,30 @@ class pdfReport(ListView):
         el transporte aéreo o marítimo, extravío o robos será de $100 dólares por recibo de almacén, si el cliente no asegura la carga. Estoy de acuerdo
         con que este envío esté sujeto a los controles de seguridad de la compañía y otras regulaciones gubernamentales."""
 
-        text = c.beginText(30, height - 470)
-        text.setFont("Helvetica", 6)
-        text.setLeading(8)
-        text.textLines(footer_text)
-        c.drawText(text)
+        # Establecer la fuente
+        c.setFont("Helvetica", 6)
 
-        # Save the PDF
+        # Dividir el texto en líneas
+        text_lines = footer_text.strip().split('\n')
+
+        # Establecer la posición inicial (x, y)
+        y_position = height - 770  # Ajustar la posición y según sea necesario
+
+        # Dibujar el texto línea por línea
+        for line in text_lines:
+            # Calcular el ancho de la línea
+            line_width = c.stringWidth(line, "Helvetica", 6)
+            
+            # Calcular la posición x para centrar la línea
+            x_position = (width - line_width) / 2  # Centrar en el ancho del lienzo
+            
+            # Dibujar la línea centrada
+            c.drawString(x_position, y_position, line)
+            
+            # Ajustar la posición y para la siguiente línea
+            y_position -= 8  # Ajustar el espaciado entre líneas
+    
+            # Save the PDF
         c.save()
         pdf_path
 
